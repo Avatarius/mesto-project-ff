@@ -5,12 +5,18 @@ import {
   addNewCardUrlInput,
   hidePopup,
 } from "./popups";
+import { addCard } from "./cards";
 
 const profileTitle = document.querySelector(".profile__title");
 const profileDescription = document.querySelector(".profile__description");
 
 function handleAddCardFormSubmit(evt) {
   evt.preventDefault();
+
+  let newCardObj = {};
+  newCardObj[addNewCardCardNameInput.value] = addNewCardUrlInput.value;
+  // addCard(newCardObj);
+  hidePopup();
 }
 
 
