@@ -1,4 +1,4 @@
-import { imagePopup, imagePopupImg, imagePopupCaption, openModal } from "./modal";
+import { openModal, imagePopup, imagePopupImg, imagePopupCaption } from "./modal";
 
 const initialCards = [
   {
@@ -37,14 +37,14 @@ function addCard(cardObj, removeFunc, likeFunc) {
   const title = cardElement.querySelector(".card__title");
   const img = cardElement.querySelector(".card__image");
   const removeBtn = cardElement.querySelector(".card__delete-button");
-  const likeBtn = cardElement.querySelector('.card__like-button');
+  const likeBtn = cardElement.querySelector(".card__like-button");
 
   title.textContent = name;
   img.alt = name;
   img.src = link;
   removeBtn.addEventListener("click", (event) => removeFunc(event.target));
-  likeBtn.addEventListener('click', (event) => likeFunc(event.target));
-  placesList.addEventListener('click', (event) => openImagePopup(event.target));
+  likeBtn.addEventListener("click", (event) => likeFunc(event.target));
+  placesList.addEventListener("click", (event) => openImagePopup(event.target));
   return cardElement;
 }
 
@@ -53,12 +53,14 @@ function removeCard(target) {
   target.closest(".card").remove();
 }
 
+// лайк
 function likeCard(target) {
-  target.classList.toggle('card__like-button_is-active');
+  target.classList.toggle("card__like-button_is-active");
 }
 
+// открытие попапа
 function openImagePopup(target) {
-  if (target.classList.contains('card__image')) {
+  if (target.classList.contains("card__image")) {
     imagePopupImg.src = target.src;
     imagePopupImg.alt = target.alt;
     imagePopupCaption.textContent = target.alt;
@@ -66,20 +68,12 @@ function openImagePopup(target) {
   }
 }
 
-
-function prependPlacesList(cardObj) { // добавить карточку в начало
+// добавить новую карточку в начало
+function prependPlacesList(cardObj) {
   placesList.prepend(addCard(cardObj, removeCard, likeCard, openImagePopup));
 }
 
+//Показать карточку из initial_cards
 
 
-
-export {
-  initialCards,
-  addCard,
-  removeCard,
-  likeCard,
-  openImagePopup,
-  prependPlacesList,
-  placesList
-};
+export { initialCards, placesList, addCard, removeCard, likeCard, openImagePopup, prependPlacesList };
