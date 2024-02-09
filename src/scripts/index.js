@@ -10,8 +10,8 @@ import {
 import {
   openModal,
   closeModal,
-  addNewCardPopup,
-  editProfilePopup,
+  addNewCardPopupObj,
+  editProfilePopupObj,
   clearAddNewCardForm,
   setProfileForm,
   handleAddCardFormSubmit,
@@ -28,17 +28,17 @@ const addCardButton = document.querySelector(".profile__add-button");
 const profileEditButton = document.querySelector(".profile__edit-button");
 
 // формы попапов
-const addNewCardForm = addNewCardPopup.querySelector(".popup__form");
-const editProfileForm = editProfilePopup.querySelector(".popup__form");
+const addNewCardForm = addNewCardPopupObj.form;
+const editProfileForm = editProfilePopupObj.form;
 
 // открытие попапов
 addCardButton.addEventListener("click", function () {
   clearAddNewCardForm();
-  openModal(addNewCardPopup);
+  openModal(addNewCardPopupObj.popup);
 });
 profileEditButton.addEventListener("click", function () {
   setProfileForm();
-  openModal(editProfilePopup);
+  openModal(editProfilePopupObj.popup);
 });
 
 //закрытие попапов

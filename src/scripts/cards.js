@@ -1,4 +1,4 @@
-import { openModal, imagePopup, imagePopupImg, imagePopupCaption } from "./modal";
+import { openModal, imagePopupObj } from "./modal";
 
 const initialCards = [
   {
@@ -32,7 +32,7 @@ const cardTemplate = document.querySelector("#card-template").content;
 // Функция создания карточки
 function addCard(cardObj, removeFunc, likeFunc) {
   const cardElement = cardTemplate.querySelector(".card").cloneNode(true);
-  let { name, link } = cardObj;
+  const { name, link } = cardObj;
 
   const title = cardElement.querySelector(".card__title");
   const img = cardElement.querySelector(".card__image");
@@ -61,19 +61,25 @@ function likeCard(target) {
 // открытие попапа
 function openImagePopup(target) {
   if (target.classList.contains("card__image")) {
-    imagePopupImg.src = target.src;
-    imagePopupImg.alt = target.alt;
-    imagePopupCaption.textContent = target.alt;
-    openModal(imagePopup);
+    imagePopupObj.img.src = target.src;
+    imagePopupObj.img.alt = target.alt;
+    imagePopupObj.caption.textContent = target.alt;
+    openModal(imagePopupObj.popup);
   }
 }
 
 // добавить новую карточку в начало
 function prependPlacesList(cardObj) {
-  placesList.prepend(addCard(cardObj, removeCard, likeCard, openImagePopup));
+  placesList.prepend( addCard(cardObj, removeCard, likeCard, openImagePopup ) );
 }
 
-//Показать карточку из initial_cards
 
-
-export { initialCards, placesList, addCard, removeCard, likeCard, openImagePopup, prependPlacesList };
+export {
+  initialCards,
+  placesList,
+  addCard,
+  removeCard,
+  likeCard,
+  openImagePopup,
+  prependPlacesList,
+};

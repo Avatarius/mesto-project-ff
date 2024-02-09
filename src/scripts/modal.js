@@ -1,24 +1,42 @@
 import { prependPlacesList } from "./cards";
 
-const addNewCardPopup = document.querySelector(".popup_type_new-card");
-const editProfilePopup = document.querySelector(".popup_type_edit");
-const imagePopup = document.querySelector(".popup_type_image");
+function constructAddOrEditPopupObj(
+  popupClass,
+  inputNameClass,
+  inputDetailsClass
+) {
+  const popup = document.querySelector(popupClass);
+  return {
+    popup,
+    form: popup.querySelector(".popup__form"),
+    inputName: document.querySelector(inputNameClass),
+    inputDetails: document.querySelector(inputDetailsClass),
+  };
+}
 
-const addNewCardCardNameInput = addNewCardPopup.querySelector(
-  ".popup__input_type_card-name"
-);
-const addNewCardUrlInput = addNewCardPopup.querySelector(
+function constructImagePopupObj(popupClass, imgClass, captionClass) {
+  return {
+    popup: document.querySelector(popupClass),
+    img: document.querySelector(imgClass),
+    caption: document.querySelector(captionClass),
+  };
+}
+
+const addNewCardPopupObj = constructAddOrEditPopupObj(
+  ".popup_type_new-card",
+  ".popup__input_type_card-name",
   ".popup__input_type_url"
 );
-const editProfileNameInput = editProfilePopup.querySelector(
-  ".popup__input_type_name"
-);
-const editProfileDescriptionInput = editProfilePopup.querySelector(
+const editProfilePopupObj = constructAddOrEditPopupObj(
+  ".popup_type_edit",
+  ".popup__input_type_name",
   ".popup__input_type_description"
 );
-
-const imagePopupImg = document.querySelector(".popup__image");
-const imagePopupCaption = document.querySelector(".popup__caption");
+const imagePopupObj = constructImagePopupObj(
+  ".popup_type_image",
+  ".popup__image",
+  ".popup__caption"
+);
 
 const profileTitle = document.querySelector(".profile__title");
 const profileDescription = document.querySelector(".profile__description");
@@ -41,45 +59,42 @@ function closeModalWithEsc(evt) {
 }
 
 function clearAddNewCardForm() {
-  addNewCardCardNameInput.value = "";
-  addNewCardUrlInput.value = "";
+  addNewCardPopupObj.inputName.value = "";
+  addNewCardPopupObj.inputDetails.value = "";
 }
 
 function setProfileForm() {
-  editProfileNameInput.value = profileTitle.textContent;
-  editProfileDescriptionInput.value = profileDescription.textContent;
+  editProfilePopupObj.inputName.value = profileTitle.textContent;
+  editProfilePopupObj.inputDetails.value = profileDescription.textContent;
 }
 
 function setProfile() {
-  profileTitle.textContent = editProfileNameInput.value;
-  profileDescription.textContent = editProfileDescriptionInput.value;
+  profileTitle.textContent = editProfilePopupObj.inputName.value;
+  profileDescription.textContent = editProfilePopupObj.inputDetails.value;
 }
 
 function handleEditProfileFormSubmit(evt) {
   evt.preventDefault();
-  console.log("submit");
   setProfile();
-  closeModal(editProfilePopup);
+  closeModal(editProfilePopupObj.popup);
 }
 
 function handleAddCardFormSubmit(evt) {
   evt.preventDefault();
   const newCardObj = {
-    name: addNewCardCardNameInput.value,
-    link: addNewCardUrlInput.value,
+    name: addNewCardPopupObj.inputName.value,
+    link: addNewCardPopupObj.inputDetails.value,
   };
   prependPlacesList(newCardObj);
-  closeModal(addNewCardPopup);
+  closeModal(addNewCardPopupObj.popup);
 }
 
 export {
   openModal,
   closeModal,
-  addNewCardPopup,
-  editProfilePopup,
-  imagePopup,
-  imagePopupImg,
-  imagePopupCaption,
+  addNewCardPopupObj,
+  editProfilePopupObj,
+  imagePopupObj,
   clearAddNewCardForm,
   setProfileForm,
   handleAddCardFormSubmit,
