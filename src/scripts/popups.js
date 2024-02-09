@@ -23,7 +23,8 @@ const editProfileDescriptionInput = editProfilePopup.querySelector(
 
 function _showPopup(popup) {
 
-  setTimeout(() => popup.classList.add("popup_is-opened"), 100);
+  // setTimeout(() => popup.classList.add("popup_is-opened"), 0);
+  popup.classList.add("popup_is-opened");
 
   document.addEventListener("mousedown", _handleHidePopup);
   document.addEventListener("keydown", _handleHidePopup);
@@ -31,8 +32,7 @@ function _showPopup(popup) {
 
 function hidePopup() {
   popup_array.forEach((item) => {
-    setTimeout(() => item.classList.remove("popup_is-opened"), 100);
-    // item.classList.toggle("popup_is-animated");
+    item.classList.remove("popup_is-opened");
   });
 }
 
