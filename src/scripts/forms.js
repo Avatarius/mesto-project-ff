@@ -1,11 +1,11 @@
-import {
+/* import {
   editProfileNameInput,
   editProfileDescriptionInput,
   addNewCardCardNameInput,
   addNewCardUrlInput,
   hidePopup,
-} from "./popups";
-import { prependPlacesList } from "./cards";
+} from "./modal";
+import { initialCards, prependPlacesList } from "./cards";
 
 const profileTitle = document.querySelector(".profile__title");
 const profileDescription = document.querySelector(".profile__description");
@@ -52,3 +52,4 @@ export {
   setProfile,
   clearAddCardForm
 };
+ */

@@ -1,4 +1,4 @@
-import { showImagePopup } from "./popups";
+import { imagePopup, imagePopupImg, imagePopupCaption, openModal } from "./modal";
 
 const initialCards = [
   {
@@ -30,7 +30,7 @@ const placesList = document.querySelector(".places__list");
 const cardTemplate = document.querySelector("#card-template").content;
 
 // Функция создания карточки
-function addCard(cardObj, removeFunc, likeFunc, openImagePopupFunc) {
+function addCard(cardObj, removeFunc, likeFunc) {
   const cardElement = cardTemplate.querySelector(".card").cloneNode(true);
   let { name, link } = cardObj;
 
@@ -44,6 +44,7 @@ function addCard(cardObj, removeFunc, likeFunc, openImagePopupFunc) {
   img.src = link;
   removeBtn.addEventListener("click", (event) => removeFunc(event.target));
   likeBtn.addEventListener('click', (event) => likeFunc(event.target));
+  placesList.addEventListener('click', (event) => openImagePopup(event.target));
   return cardElement;
 }
 
@@ -56,17 +57,29 @@ function likeCard(target) {
   target.classList.toggle('card__like-button_is-active');
 }
 
+function openImagePopup(target) {
+  if (target.classList.contains('card__image')) {
+    imagePopupImg.src = target.src;
+    imagePopupImg.alt = target.alt;
+    imagePopupCaption.textContent = target.alt;
+    openModal(imagePopup);
+  }
+}
+
 
 function prependPlacesList(cardObj) { // добавить карточку в начало
-  placesList.prepend(addCard(cardObj, removeCard));
+  placesList.prepend(addCard(cardObj, removeCard, likeCard, openImagePopup));
 }
 
-function displayInitialCards() { // показать карточки из initialCards
-  initialCards.forEach((item) => placesList.append(addCard(item, removeCard, likeCard, showImagePopup)));
-}
+
+
 
 export {
+  initialCards,
+  addCard,
+  removeCard,
+  likeCard,
+  openImagePopup,
   prependPlacesList,
-  displayInitialCards,
   placesList
 };
