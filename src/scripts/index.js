@@ -4,10 +4,6 @@ import { addCard, removeCard, likeCard } from "./card";
 import {
   openModal,
   closeModal,
-  clearAddNewCardForm,
-  setProfileForm,
-  setProfile,
-  setCardImage,
 } from "./modal";
 
 // функции для генерации DOM объектов
@@ -52,6 +48,10 @@ const imagePopupObj = constructImagePopupObj(
 // список с карточками
 const placesList = document.querySelector(".places__list");
 
+// Данные профиля
+const profileTitle = document.querySelector(".profile__title");
+const profileDescription = document.querySelector(".profile__description");
+
 // кнопки открытия попапов
 const addCardButton = document.querySelector(".profile__add-button");
 const profileEditButton = document.querySelector(".profile__edit-button");
@@ -62,6 +62,31 @@ const funcObj = {
   likeFunc: likeCard,
   imgClickFunc: handleCardImgClick,
 };
+
+// очистка формы добавления карточки при открытии попапа
+function clearAddNewCardForm(popupObj) {
+  popupObj.inputName.value = "";
+  popupObj.inputDetails.value = "";
+}
+
+// Заполнить форму изменения профиля данными со страницы при открытии попапа
+function setProfileForm(popupObj) {
+  popupObj.inputName.value = profileTitle.textContent;
+  popupObj.inputDetails.value = profileDescription.textContent;
+}
+
+// Изменение данных профиля при сабмите
+function setProfile(popupObj) {
+  profileTitle.textContent = popupObj.inputName.value;
+  profileDescription.textContent = popupObj.inputDetails.value;
+}
+
+// задать картинку попапа с картинкой при открытии попапа
+function setCardImage(popupObj, img) {
+  popupObj.img.src = img.src;
+  popupObj.img.alt = img.alt;
+  popupObj.caption.textContent = img.alt;
+}
 
 // обработчики submit
 function handleEditProfileFormSubmit(evt) {

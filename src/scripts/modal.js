@@ -1,6 +1,3 @@
-const profileTitle = document.querySelector(".profile__title");
-const profileDescription = document.querySelector(".profile__description");
-
 function openModal(popup) {
   popup.classList.add("popup_is-opened");
   document.openedPopup = popup;
@@ -30,32 +27,7 @@ function closeModalWithEsc(evt) {
   }
 }
 
-function clearAddNewCardForm(popupObj) {
-  popupObj.inputName.value = "";
-  popupObj.inputDetails.value = "";
-}
-
-function setProfileForm(popupObj) {
-  popupObj.inputName.value = profileTitle.textContent;
-  popupObj.inputDetails.value = profileDescription.textContent;
-}
-
-function setProfile(popupObj) {
-  profileTitle.textContent = popupObj.inputName.value;
-  profileDescription.textContent = popupObj.inputDetails.value;
-}
-
-function setCardImage(popupObj, img) {
-  popupObj.img.src = img.src;
-  popupObj.img.alt = img.alt;
-  popupObj.caption.textContent = img.alt;
-}
-
 export {
   openModal,
   closeModal,
-  clearAddNewCardForm,
-  setProfileForm,
-  setProfile,
-  setCardImage,
 };
