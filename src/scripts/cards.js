@@ -1,5 +1,3 @@
-import { placesList, addCard } from "./card";
-
 const initialCards = [
   {
     name: "Архыз",

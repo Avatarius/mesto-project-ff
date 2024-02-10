@@ -1,6 +1,6 @@
 import "../pages/index.css";
 import { initialCards } from "./cards";
-import { placesList, addCard, removeCard, likeCard } from "./card";
+import { addCard, removeCard, likeCard } from "./card";
 import {
   openModal,
   closeModal,
@@ -49,13 +49,19 @@ const imagePopupObj = constructImagePopupObj(
   ".popup__caption"
 );
 
-// формы попапов
-const addNewCardForm = addNewCardPopupObj.form;
-const editProfileForm = editProfilePopupObj.form;
+// список с карточками
+const placesList = document.querySelector(".places__list");
 
 // кнопки открытия попапов
 const addCardButton = document.querySelector(".profile__add-button");
 const profileEditButton = document.querySelector(".profile__edit-button");
+
+// Объект с функциями
+const funcObj = {
+  removeFunc: removeCard,
+  likeFunc: likeCard,
+  imgClickFunc: handleCardImgClick,
+};
 
 // обработчики submit
 function handleEditProfileFormSubmit(evt) {
@@ -70,24 +76,18 @@ function handleAddCardFormSubmit(evt) {
     name: addNewCardPopupObj.inputName.value,
     link: addNewCardPopupObj.inputDetails.value,
   };
-  placesList.prepend(
-    addCard(newCardObj, removeCard, likeCard, handleCardImgClick)
-  );
+  placesList.prepend(addCard(newCardObj, funcObj));
   closeModal(addNewCardPopupObj.popup);
 }
 
 // обработчик клика по картинке карточки
 function handleCardImgClick(evt) {
-  if (evt.target.classList.contains("card__image")) {
-    setCardImage(evt.target, imagePopupObj);
-    openModal(imagePopupObj.popup);
-  }
+  setCardImage(imagePopupObj, evt.target);
+  openModal(imagePopupObj.popup);
 }
 
 // показать дефолтные карточки
-initialCards.forEach((item) =>
-  placesList.append( addCard(item, removeCard, likeCard, handleCardImgClick) )
-);
+initialCards.forEach((item) => placesList.append(addCard(item, funcObj)));
 
 // открытие попапов
 addCardButton.addEventListener("click", function () {
@@ -100,5 +100,5 @@ profileEditButton.addEventListener("click", function () {
 });
 
 // submit
-addNewCardForm.addEventListener("submit", handleAddCardFormSubmit);
-editProfileForm.addEventListener("submit", handleEditProfileFormSubmit);
+addNewCardPopupObj.form.addEventListener("submit", handleAddCardFormSubmit);
+editProfilePopupObj.form.addEventListener("submit", handleEditProfileFormSubmit);

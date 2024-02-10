@@ -45,7 +45,7 @@ function setProfile(popupObj) {
   profileDescription.textContent = popupObj.inputDetails.value;
 }
 
-function setCardImage(img, popupObj) {
+function setCardImage(popupObj, img) {
   popupObj.img.src = img.src;
   popupObj.img.alt = img.alt;
   popupObj.caption.textContent = img.alt;
