@@ -15,6 +15,7 @@ function constructAddOrEditPopupObj(
     form: popup.querySelector(".popup__form"),
     inputName: document.querySelector(inputNameClass),
     inputDetails: document.querySelector(inputDetailsClass),
+    button: popup.querySelector('.popup__button'),
   };
 }
 
@@ -179,10 +180,17 @@ initialCards.forEach((item) => placesList.append(addCard(item, funcObj)));
 // открытие попапов
 addCardButton.addEventListener("click", function () {
   clearAddNewCardForm(addNewCardPopupObj);
+  toggleButtonState([addNewCardPopupObj.inputName, addNewCardPopupObj.inputDetails], addNewCardPopupObj.button);
+  // скрытие ошибок при открытии
+  hideInputError(addNewCardPopupObj.form, addNewCardPopupObj.inputName);
+  hideInputError(addNewCardPopupObj.form, addNewCardPopupObj.inputDetails);
   openModal(addNewCardPopupObj.popup);
 });
 profileEditButton.addEventListener("click", function () {
   setProfileForm(editProfilePopupObj);
+  // скрытие ошибок при открытии
+  hideInputError(editProfilePopupObj.form, editProfilePopupObj.inputName);
+  hideInputError(editProfilePopupObj.form, editProfilePopupObj.inputDetails);
   openModal(editProfilePopupObj.popup);
 });
 
