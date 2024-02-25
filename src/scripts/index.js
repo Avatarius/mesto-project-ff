@@ -126,7 +126,6 @@ function hideInputError(formElement, inputElement) {
 }
 
 function checkInputValidity(formElement, inputElement) {
-  console.dir(inputElement);
   if (inputElement.validity.valueMissing) {
     inputElement.setCustomValidity(inputElement.dataset.valueMissingError);
   } else {
