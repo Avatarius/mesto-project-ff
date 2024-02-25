@@ -1,10 +1,7 @@
 import "../pages/index.css";
 import { initialCards } from "./cards";
 import { addCard, removeCard, likeCard } from "./card";
-import {
-  openModal,
-  closeModal,
-} from "./modal";
+import { openModal, closeModal } from "./modal";
 
 // функции для генерации DOM объектов
 function constructAddOrEditPopupObj(
@@ -114,49 +111,67 @@ function handleCardImgClick(evt) {
 function showInputError(formElement, inputElement, errorMessage) {
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
   errorElement.textContent = errorMessage;
-  errorElement.classList.add('popup__input-error_active');
-  inputElement.classList.add('popup__input_error');
+  errorElement.classList.add("popup__input-error_active");
+  inputElement.classList.add("popup__input_error");
 }
 
 function hideInputError(formElement, inputElement) {
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
-  errorElement.classList.remove('popup__input-error_active');
-  inputElement.classList.remove('popup__input_error');
-  errorElement.textContent = '';
+  errorElement.classList.remove("popup__input-error_active");
+  inputElement.classList.remove("popup__input_error");
+  errorElement.textContent = "";
+}
+
+function hasInvalidInput(inputList) {
+  return inputList.some((inputElement) => !inputElement.validity.valid);
+}
+
+function toggleButtonState(inputList, buttonElement) {
+  if (hasInvalidInput(inputList)) {
+    buttonElement.classList.add("popup__button_inactive");
+  } else {
+    buttonElement.classList.remove("popup__button_inactive");
+  }
 }
 
 function checkInputValidity(formElement, inputElement) {
   if (inputElement.validity.valueMissing) {
     inputElement.setCustomValidity(inputElement.dataset.valueMissingError);
   } else {
-    inputElement.setCustomValidity('');
+    inputElement.setCustomValidity("");
   }
 
+  if (inputElement.validity.patternMismatch) {
+    inputElement.setCustomValidity(inputElement.dataset.patternMismatchError);
+  } else {
+    inputElement.setCustomValidity("");
+  }
 
   if (!inputElement.validity.valid) {
-    showInputError(formElement, inputElement, inputElement.validationMessage)
+    showInputError(formElement, inputElement, inputElement.validationMessage);
   } else {
     hideInputError(formElement, inputElement);
   }
 }
 
 function setEventListeners(formElement) {
-  const inputList = formElement.querySelectorAll('.popup__input');
-  inputList.forEach(inputElement => {
-    inputElement.addEventListener('input', function() {
+  const inputList = Array.from(formElement.querySelectorAll(".popup__input"));
+  const buttonElement = formElement.querySelector(".popup__button");
+  toggleButtonState(inputList, buttonElement);
+  inputList.forEach((inputElement) => {
+    inputElement.addEventListener("input", function () {
       checkInputValidity(formElement, inputElement);
+      toggleButtonState(inputList, buttonElement);
     });
   });
 }
 
 function enableValidation() {
-  const formList = Array.from(document.querySelectorAll('.popup__form'));
-  formList.forEach(formElement => {
+  const formList = Array.from(document.querySelectorAll(".popup__form"));
+  formList.forEach((formElement) => {
     setEventListeners(formElement);
   });
 }
-
-
 
 // показать дефолтные карточки
 initialCards.forEach((item) => placesList.append(addCard(item, funcObj)));
@@ -173,7 +188,9 @@ profileEditButton.addEventListener("click", function () {
 
 // submit
 addNewCardPopupObj.form.addEventListener("submit", handleAddCardFormSubmit);
-editProfilePopupObj.form.addEventListener("submit", handleEditProfileFormSubmit);
-
+editProfilePopupObj.form.addEventListener(
+  "submit",
+  handleEditProfileFormSubmit
+);
 
 enableValidation();
