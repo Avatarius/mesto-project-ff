@@ -177,19 +177,21 @@ function enableValidation() {
  */
 // показать дефолтные карточки
 initialCards.forEach((item) => placesList.append(addCard(item, funcObj)));
-
+const clearValidationSettingsObj = {inputErrorClass: 'popup__input_error', errorClass: 'popup__input-error_active', errorSelector: '.popup__input-error', inputSelector: '.popup__input'};
 // открытие попапов
 addCardButton.addEventListener("click", function () {
   clearAddNewCardForm(addNewCardPopupObj);
   // toggleButtonState([addNewCardPopupObj.inputName, addNewCardPopupObj.inputDetails], addNewCardPopupObj.button);
-  // скрытие ошибок при открытии
+  clearValidationSettingsObj.form = addNewCardPopupObj.form;
+  clearValidation(clearValidationSettingsObj);
   // hideInputError(addNewCardPopupObj.form, addNewCardPopupObj.inputName);
   // hideInputError(addNewCardPopupObj.form, addNewCardPopupObj.inputDetails);
   openModal(addNewCardPopupObj.popup);
 });
 profileEditButton.addEventListener("click", function () {
   setProfileForm(editProfilePopupObj);
-  // скрытие ошибок при открытии
+  clearValidationSettingsObj.form = editProfilePopupObj.form;
+  clearValidation(clearValidationSettingsObj);
   // hideInputError(editProfilePopupObj.form, editProfilePopupObj.inputName);
   // hideInputError(editProfilePopupObj.form, editProfilePopupObj.inputDetails);
   openModal(editProfilePopupObj.popup);

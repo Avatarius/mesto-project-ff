@@ -8,7 +8,14 @@ function enableValidation(settingsObj) {
   });
 }
 
-function clearValidation() {}
+function clearValidation(settingsObj) {
+  const errorList = settingsObj.form.querySelectorAll(settingsObj.errorSelector);
+  const inputList = settingsObj.form.querySelectorAll(settingsObj.inputSelector);
+
+  inputList.forEach((inputElement, index) => {
+    hideInputError(errorList[index], inputElement, settingsObj.inputErrorClass, settingsObj.errorClass);
+  });
+}
 
 function setEventListeners(formElement, inputList, buttonElement, inactiveButtonClass, inputErrorClass, errorClass) {
   toggleButtonState(inputList, buttonElement, inactiveButtonClass);
