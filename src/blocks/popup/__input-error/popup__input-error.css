@@ -1,8 +1,18 @@
 .popup__input-error {
-  opacity: 0;
+  position: absolute;
+  z-index: 2;
   display: block;
-  font-size: 12px;
-  font-weight: 400;
+  opacity: 0;
   color: #ff0000;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 14.52px;
   transition: opacity 0.2s linear;
+  inset-inline-start: 0;
+  inset-block-start: 53px;
+  min-block-size: 23px;
+}
+
+.popup__label:last-of-type .popup__input-error {
+  inset-block-start: 40px;
 }

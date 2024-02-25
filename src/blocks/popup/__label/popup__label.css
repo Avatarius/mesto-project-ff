@@ -1,13 +1,7 @@
 .popup__label {
   position: relative;
-  display: block;
-  block-size: 1px;
-  /* min-block-size: 100px; */
-  /* margin-block-end: 10px; */
-  /* min-block-size: 65px; */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-block-size: 70px;
 }
-
-/* .popup__label:last-of-type {
-  block-size: 50px;
-}
- */
