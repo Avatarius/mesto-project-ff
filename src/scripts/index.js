@@ -111,6 +111,46 @@ function handleCardImgClick(evt) {
   openModal(imagePopupObj.popup);
 }
 
+function showInputError(formElement, inputElement, errorMessage) {
+  const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
+  errorElement.textContent = errorMessage;
+  errorElement.classList.add('popup__input-error_active');
+  inputElement.classList.add('popup__input_error');
+}
+
+function hideInputError(formElement, inputElement) {
+  const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
+  errorElement.classList.remove('popup__input-error_active');
+  inputElement.classList.remove('popup__input_error');
+  errorElement.textContent = '';
+}
+
+function checkInputValidity(formElement, inputElement) {
+  if (!inputElement.validity.valid) {
+    showInputError(formElement, inputElement, inputElement.validationMessage)
+  } else {
+    hideInputError(formElement, inputElement);
+  }
+}
+
+function setEventListeners(formElement) {
+  const inputList = formElement.querySelectorAll('.popup__input');
+  inputList.forEach(inputElement => {
+    inputElement.addEventListener('input', function() {
+      checkInputValidity(formElement, inputElement);
+    });
+  });
+}
+
+function enableValidation() {
+  const formList = Array.from(document.querySelectorAll('.popup__form'));
+  formList.forEach(formElement => {
+    setEventListeners(formElement);
+  });
+}
+
+
+
 // показать дефолтные карточки
 initialCards.forEach((item) => placesList.append(addCard(item, funcObj)));
 
@@ -127,3 +167,6 @@ profileEditButton.addEventListener("click", function () {
 // submit
 addNewCardPopupObj.form.addEventListener("submit", handleAddCardFormSubmit);
 editProfilePopupObj.form.addEventListener("submit", handleEditProfileFormSubmit);
+
+
+enableValidation();
