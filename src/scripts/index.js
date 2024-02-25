@@ -2,6 +2,7 @@ import "../pages/index.css";
 import { initialCards } from "./cards";
 import { addCard, removeCard, likeCard } from "./card";
 import { openModal, closeModal } from "./modal";
+import { enableValidation, clearValidation } from "./validation";
 
 // функции для генерации DOM объектов
 function constructAddOrEditPopupObj(
@@ -109,7 +110,7 @@ function handleCardImgClick(evt) {
   openModal(imagePopupObj.popup);
 }
 
-function showInputError(formElement, inputElement, errorMessage) {
+/* function showInputError(formElement, inputElement, errorMessage) {
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
   errorElement.textContent = errorMessage;
   errorElement.classList.add("popup__input-error_active");
@@ -173,24 +174,24 @@ function enableValidation() {
     setEventListeners(formElement);
   });
 }
-
+ */
 // показать дефолтные карточки
 initialCards.forEach((item) => placesList.append(addCard(item, funcObj)));
 
 // открытие попапов
 addCardButton.addEventListener("click", function () {
   clearAddNewCardForm(addNewCardPopupObj);
-  toggleButtonState([addNewCardPopupObj.inputName, addNewCardPopupObj.inputDetails], addNewCardPopupObj.button);
+  // toggleButtonState([addNewCardPopupObj.inputName, addNewCardPopupObj.inputDetails], addNewCardPopupObj.button);
   // скрытие ошибок при открытии
-  hideInputError(addNewCardPopupObj.form, addNewCardPopupObj.inputName);
-  hideInputError(addNewCardPopupObj.form, addNewCardPopupObj.inputDetails);
+  // hideInputError(addNewCardPopupObj.form, addNewCardPopupObj.inputName);
+  // hideInputError(addNewCardPopupObj.form, addNewCardPopupObj.inputDetails);
   openModal(addNewCardPopupObj.popup);
 });
 profileEditButton.addEventListener("click", function () {
   setProfileForm(editProfilePopupObj);
   // скрытие ошибок при открытии
-  hideInputError(editProfilePopupObj.form, editProfilePopupObj.inputName);
-  hideInputError(editProfilePopupObj.form, editProfilePopupObj.inputDetails);
+  // hideInputError(editProfilePopupObj.form, editProfilePopupObj.inputName);
+  // hideInputError(editProfilePopupObj.form, editProfilePopupObj.inputDetails);
   openModal(editProfilePopupObj.popup);
 });
 
@@ -201,4 +202,11 @@ editProfilePopupObj.form.addEventListener(
   handleEditProfileFormSubmit
 );
 
-enableValidation();
+enableValidation({
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_inactive',
+  inputErrorClass: 'popup__input_error',
+  errorClass: 'popup__input-error_active'
+});
