@@ -7,7 +7,7 @@ const config = {
 }
 
 
-function getUserInfo() {
+function getProfileInfoApi() {
   return fetch(`${config.baseUrl}/users/me`, {
     headers: {
       authorization: config.headers.authorization,
@@ -16,14 +16,42 @@ function getUserInfo() {
   })
 }
 
-function getCardList() {
+function getCardListApi() {
   return fetch(`${config.baseUrl}/cards`, {
     headers: {
       authorization: config.headers.authorization,
       'Content-Type': config.headers['Content-Type'],
     }
-  })
+  });
+}
+
+function setProfileInfoApi(profileObj) {
+  return fetch(`${config.baseUrl}/users/me`, {
+    method: 'PATCH',
+    headers: {
+      authorization: config.headers.authorization,
+      'Content-Type': config.headers['Content-Type'],
+    },
+    body: JSON.stringify({
+      name: profileObj.name,
+      about: profileObj,
+    })
+  });
+}
+
+function addCardApi(cardObj) {
+  return fetch(`${config.baseUrl}/cards`, {
+    method: 'POST',
+    headers: {
+      authorization: config.headers.authorization,
+      'Content-Type': config.headers['Content-Type'],
+    },
+    body: JSON.stringify({
+      name: cardObj.name,
+      link: cardObj.link,
+    })
+  });
 }
 
 
-export { getUserInfo, getCardList };
+export { getProfileInfoApi, setProfileInfoApi, getCardListApi, addCardApi };
