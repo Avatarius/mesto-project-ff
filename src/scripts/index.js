@@ -16,7 +16,7 @@ function constructAddOrEditPopupObj(
     form: popup.querySelector(".popup__form"),
     inputName: document.querySelector(inputNameClass),
     inputDetails: document.querySelector(inputDetailsClass),
-    button: popup.querySelector('.popup__button'),
+    button: popup.querySelector(".popup__button"),
   };
 }
 
@@ -177,21 +177,34 @@ function enableValidation() {
  */
 // показать дефолтные карточки
 initialCards.forEach((item) => placesList.append(addCard(item, funcObj)));
-const clearValidationSettingsObj = {inputErrorClass: 'popup__input_error', errorClass: 'popup__input-error_active', errorSelector: '.popup__input-error', inputSelector: '.popup__input'};
+/* const clearValidationSettingsObj = {
+  inputErrorClass: "popup__input_error",
+  errorClass: "popup__input-error_active",
+  errorSelector: ".popup__input-error",
+  inputSelector: ".popup__input",
+  submitButtonSelector: ".popup__button",
+}; */
+const validationObj = {
+  formSelector: ".popup__form",
+  inputSelector: ".popup__input",
+  submitButtonSelector: ".popup__button",
+  inactiveButtonClass: "popup__button_inactive",
+  errorSelector: ".popup__input-error",
+  inputErrorClass: "popup__input_error",
+  errorActiveClass: "popup__input-error_active",
+}
 // открытие попапов
 addCardButton.addEventListener("click", function () {
   clearAddNewCardForm(addNewCardPopupObj);
   // toggleButtonState([addNewCardPopupObj.inputName, addNewCardPopupObj.inputDetails], addNewCardPopupObj.button);
-  clearValidationSettingsObj.form = addNewCardPopupObj.form;
-  clearValidation(clearValidationSettingsObj);
+  clearValidation(addNewCardPopupObj.form, validationObj);
   // hideInputError(addNewCardPopupObj.form, addNewCardPopupObj.inputName);
   // hideInputError(addNewCardPopupObj.form, addNewCardPopupObj.inputDetails);
   openModal(addNewCardPopupObj.popup);
 });
 profileEditButton.addEventListener("click", function () {
   setProfileForm(editProfilePopupObj);
-  clearValidationSettingsObj.form = editProfilePopupObj.form;
-  clearValidation(clearValidationSettingsObj);
+  clearValidation(editProfilePopupObj.form, validationObj);
   // hideInputError(editProfilePopupObj.form, editProfilePopupObj.inputName);
   // hideInputError(editProfilePopupObj.form, editProfilePopupObj.inputDetails);
   openModal(editProfilePopupObj.popup);
@@ -204,11 +217,4 @@ editProfilePopupObj.form.addEventListener(
   handleEditProfileFormSubmit
 );
 
-enableValidation({
-  formSelector: '.popup__form',
-  inputSelector: '.popup__input',
-  submitButtonSelector: '.popup__button',
-  inactiveButtonClass: 'popup__button_inactive',
-  inputErrorClass: 'popup__input_error',
-  errorClass: 'popup__input-error_active'
-});
+enableValidation(validationObj);
