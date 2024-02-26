@@ -1,0 +1,6 @@
+.card__like-counter {
+  display: block;
+  position: absolute;
+  text-align: center;
+  inset: 14px 0 0 0;
+}
