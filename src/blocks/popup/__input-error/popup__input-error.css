@@ -1,6 +1,6 @@
 .popup__input-error {
-  position: absolute;
-  z-index: 2;
+  /* position: absolute; */
+  /* z-index: 2; */
   display: block;
   opacity: 0;
   color: #ff0000;
@@ -8,9 +8,9 @@
   font-size: 12px;
   line-height: 14.52px;
   transition: opacity 0.2s linear;
-  inset-inline-start: 0;
-  inset-block-start: 53px;
-  min-block-size: 23px;
+  /* inset-inline-start: 0; */
+  /* inset-block-start: 53px; */
+  min-block-size: 29px;
 }
 
 .popup__label:last-of-type .popup__input-error {
