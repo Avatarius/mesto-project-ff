@@ -43,6 +43,16 @@ const imagePopupObj = constructImagePopupObj(
   ".popup__image",
   ".popup__caption"
 );
+// объект с настройками для валидации
+const validationObj = {
+  formSelector: ".popup__form",
+  inputSelector: ".popup__input",
+  submitButtonSelector: ".popup__button",
+  inactiveButtonClass: "popup__button_inactive",
+  errorSelector: ".popup__input-error",
+  inputErrorClass: "popup__input_error",
+  errorActiveClass: "popup__input-error_active",
+};
 
 // список с карточками
 const placesList = document.querySelector(".places__list");
@@ -110,103 +120,19 @@ function handleCardImgClick(evt) {
   openModal(imagePopupObj.popup);
 }
 
-/* function showInputError(formElement, inputElement, errorMessage) {
-  const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
-  errorElement.textContent = errorMessage;
-  errorElement.classList.add("popup__input-error_active");
-  inputElement.classList.add("popup__input_error");
-}
-
-function hideInputError(formElement, inputElement) {
-  const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
-  errorElement.classList.remove("popup__input-error_active");
-  inputElement.classList.remove("popup__input_error");
-  errorElement.textContent = "";
-}
-
-function hasInvalidInput(inputList) {
-  return inputList.some((inputElement) => !inputElement.validity.valid);
-}
-
-function toggleButtonState(inputList, buttonElement) {
-  if (hasInvalidInput(inputList)) {
-    buttonElement.classList.add("popup__button_inactive");
-  } else {
-    buttonElement.classList.remove("popup__button_inactive");
-  }
-}
-
-function checkInputValidity(formElement, inputElement) {
-  if (inputElement.validity.valueMissing) {
-    inputElement.setCustomValidity(inputElement.dataset.valueMissingError);
-  } else {
-    inputElement.setCustomValidity("");
-  }
-
-  if (inputElement.validity.patternMismatch) {
-    inputElement.setCustomValidity(inputElement.dataset.patternMismatchError);
-  } else {
-    inputElement.setCustomValidity("");
-  }
-
-  if (!inputElement.validity.valid) {
-    showInputError(formElement, inputElement, inputElement.validationMessage);
-  } else {
-    hideInputError(formElement, inputElement);
-  }
-}
-
-function setEventListeners(formElement) {
-  const inputList = Array.from(formElement.querySelectorAll(".popup__input"));
-  const buttonElement = formElement.querySelector(".popup__button");
-  toggleButtonState(inputList, buttonElement);
-  inputList.forEach((inputElement) => {
-    inputElement.addEventListener("input", function () {
-      checkInputValidity(formElement, inputElement);
-      toggleButtonState(inputList, buttonElement);
-    });
-  });
-}
-
-function enableValidation() {
-  const formList = Array.from(document.querySelectorAll(".popup__form"));
-  formList.forEach((formElement) => {
-    setEventListeners(formElement);
-  });
-}
- */
 // показать дефолтные карточки
 initialCards.forEach((item) => placesList.append(addCard(item, funcObj)));
-/* const clearValidationSettingsObj = {
-  inputErrorClass: "popup__input_error",
-  errorClass: "popup__input-error_active",
-  errorSelector: ".popup__input-error",
-  inputSelector: ".popup__input",
-  submitButtonSelector: ".popup__button",
-}; */
-const validationObj = {
-  formSelector: ".popup__form",
-  inputSelector: ".popup__input",
-  submitButtonSelector: ".popup__button",
-  inactiveButtonClass: "popup__button_inactive",
-  errorSelector: ".popup__input-error",
-  inputErrorClass: "popup__input_error",
-  errorActiveClass: "popup__input-error_active",
-}
+
+
 // открытие попапов
 addCardButton.addEventListener("click", function () {
   clearAddNewCardForm(addNewCardPopupObj);
-  // toggleButtonState([addNewCardPopupObj.inputName, addNewCardPopupObj.inputDetails], addNewCardPopupObj.button);
   clearValidation(addNewCardPopupObj.form, validationObj);
-  // hideInputError(addNewCardPopupObj.form, addNewCardPopupObj.inputName);
-  // hideInputError(addNewCardPopupObj.form, addNewCardPopupObj.inputDetails);
   openModal(addNewCardPopupObj.popup);
 });
 profileEditButton.addEventListener("click", function () {
   setProfileForm(editProfilePopupObj);
   clearValidation(editProfilePopupObj.form, validationObj);
-  // hideInputError(editProfilePopupObj.form, editProfilePopupObj.inputName);
-  // hideInputError(editProfilePopupObj.form, editProfilePopupObj.inputDetails);
   openModal(editProfilePopupObj.popup);
 });
 
