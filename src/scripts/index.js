@@ -86,7 +86,14 @@ function setCardImage(popupObj, img) {
 function handleEditProfileFormSubmit(evt) {
   evt.preventDefault();
   setProfile(editProfilePopupObj);
-  setProfileInfoApi({name: editProfilePopupObj.inputList[0].value, about: editProfilePopupObj.inputList[1].value});
+  setProfileInfoApi({name: editProfilePopupObj.inputList[0].value, about: editProfilePopupObj.inputList[1].value})
+    .then(res => {
+      if (res.ok) {
+        return res.json();
+      }
+      return Promise.reject(`Ошибка ${res.status}`)
+    })
+    .catch(err => console.log(err));
   closeModal(editProfilePopupObj.popup);
 }
 
@@ -97,7 +104,14 @@ function handleAddCardFormSubmit(evt) {
     link: addNewCardPopupObj.inputList[1].value,
   };
   placesList.prepend(addCard(newCardObj, funcObj));
-  addCardApi(newCardObj);
+  addCardApi(newCardObj)
+    .then(res => {
+      if (res.ok) {
+        return res.json();
+      }
+      return Promise.reject(`Ошибка ${res.status}`)
+    })
+    .catch(err => console.log(err));
 
   closeModal(addNewCardPopupObj.popup);
 }
@@ -153,7 +167,9 @@ Promise.all([getProfileInfoApi(), getCardListApi()])
     profileDescription.textContent = profileInfo.about;
     profileImage.style.backgroundImage = `url(${profileInfo.avatar})`;
 
-    cardList.forEach((card) => placesList.append(addCard(card, funcObj)));
+    cardList.forEach((card) => {
+      placesList.append(addCard(card, funcObj));
+    });
   })
   .catch((error) => {
     console.log(error);

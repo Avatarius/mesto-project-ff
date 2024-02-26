@@ -34,7 +34,7 @@ function setProfileInfoApi(profileObj) {
     },
     body: JSON.stringify({
       name: profileObj.name,
-      about: profileObj,
+      about: profileObj.about,
     })
   });
 }
