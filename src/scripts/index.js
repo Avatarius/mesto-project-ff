@@ -5,44 +5,28 @@ import { openModal, closeModal } from "./modal";
 import { enableValidation, clearValidation } from "./validation";
 
 // функции для генерации DOM объектов
-function constructAddOrEditPopupObj(
-  popupClass,
-  inputNameClass,
-  inputDetailsClass
-) {
+function constructAddOrEditPopupObj(popupClass) {
   const popup = document.querySelector(popupClass);
   return {
     popup,
     form: popup.querySelector(".popup__form"),
-    inputName: document.querySelector(inputNameClass),
-    inputDetails: document.querySelector(inputDetailsClass),
+    inputList: popup.querySelectorAll(".popup__input"),
     button: popup.querySelector(".popup__button"),
   };
 }
 
-function constructImagePopupObj(popupClass, imgClass, captionClass) {
+function constructImagePopupObj(popupClass) {
+  const popup = document.querySelector(popupClass);
   return {
-    popup: document.querySelector(popupClass),
-    img: document.querySelector(imgClass),
-    caption: document.querySelector(captionClass),
+    popup,
+    img: popup.querySelector(".popup__image"),
+    caption: popup.querySelector(".popup__caption"),
   };
 }
 // DOM объекты
-const addNewCardPopupObj = constructAddOrEditPopupObj(
-  ".popup_type_new-card",
-  ".popup__input_type_card-name",
-  ".popup__input_type_url"
-);
-const editProfilePopupObj = constructAddOrEditPopupObj(
-  ".popup_type_edit",
-  ".popup__input_type_name",
-  ".popup__input_type_description"
-);
-const imagePopupObj = constructImagePopupObj(
-  ".popup_type_image",
-  ".popup__image",
-  ".popup__caption"
-);
+const addNewCardPopupObj = constructAddOrEditPopupObj(".popup_type_new-card");
+const editProfilePopupObj = constructAddOrEditPopupObj(".popup_type_edit");
+const imagePopupObj = constructImagePopupObj(".popup_type_image");
 // объект с настройками для валидации
 const validationObj = {
   formSelector: ".popup__form",
@@ -74,20 +58,19 @@ const funcObj = {
 
 // очистка формы добавления карточки при открытии попапа
 function clearAddNewCardForm(popupObj) {
-  popupObj.inputName.value = "";
-  popupObj.inputDetails.value = "";
+  popupObj.form.reset();
 }
 
 // Заполнить форму изменения профиля данными со страницы при открытии попапа
 function setProfileForm(popupObj) {
-  popupObj.inputName.value = profileTitle.textContent;
-  popupObj.inputDetails.value = profileDescription.textContent;
+  popupObj.inputList[0].value = profileTitle.textContent;
+  popupObj.inputList[1].value = profileDescription.textContent;
 }
 
 // Изменение данных профиля при сабмите
 function setProfile(popupObj) {
-  profileTitle.textContent = popupObj.inputName.value;
-  profileDescription.textContent = popupObj.inputDetails.value;
+  profileTitle.textContent = popupObj.inputList[0].value;
+  profileDescription.textContent = popupObj.inputList[1].value;
 }
 
 // задать картинку попапа с картинкой при открытии попапа
@@ -107,8 +90,8 @@ function handleEditProfileFormSubmit(evt) {
 function handleAddCardFormSubmit(evt) {
   evt.preventDefault();
   const newCardObj = {
-    name: addNewCardPopupObj.inputName.value,
-    link: addNewCardPopupObj.inputDetails.value,
+    name: addNewCardPopupObj.inputList[0].value,
+    link: addNewCardPopupObj.inputList[1].value,
   };
   placesList.prepend(addCard(newCardObj, funcObj));
   closeModal(addNewCardPopupObj.popup);
@@ -122,7 +105,6 @@ function handleCardImgClick(evt) {
 
 // показать дефолтные карточки
 initialCards.forEach((item) => placesList.append(addCard(item, funcObj)));
-
 
 // открытие попапов
 addCardButton.addEventListener("click", function () {
