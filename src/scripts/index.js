@@ -1,8 +1,9 @@
 import "../pages/index.css";
-import { initialCards } from "./cards";
+// import { initialCards } from "./cards";
 import { addCard, removeCard, likeCard } from "./card";
 import { openModal, closeModal } from "./modal";
 import { enableValidation, clearValidation } from "./validation";
+import { getUserInfo, getCardList } from "./api";
 
 // функции для генерации DOM объектов
 function constructAddOrEditPopupObj(popupClass) {
@@ -44,6 +45,7 @@ const placesList = document.querySelector(".places__list");
 // Данные профиля
 const profileTitle = document.querySelector(".profile__title");
 const profileDescription = document.querySelector(".profile__description");
+const profileImage = document.querySelector(".profile__image");
 
 // кнопки открытия попапов
 const addCardButton = document.querySelector(".profile__add-button");
@@ -104,7 +106,7 @@ function handleCardImgClick(evt) {
 }
 
 // показать дефолтные карточки
-initialCards.forEach((item) => placesList.append(addCard(item, funcObj)));
+// initialCards.forEach((item) => placesList.append(addCard(item, funcObj)));
 
 // открытие попапов
 addCardButton.addEventListener("click", function () {
@@ -125,4 +127,58 @@ editProfilePopupObj.form.addEventListener(
   handleEditProfileFormSubmit
 );
 
+// данные о пользователе с сервера
+/* getUserInfo()
+  .then((res) => {
+    if (res.ok) {
+      return res.json();
+    }
+    return Promise.reject(`Ошибка ${res.status}`);
+  })
+  .then((res) => {
+    profileTitle.textContent = res.name;
+    profileDescription.textContent = res.about;
+    profileImage.style.backgroundImage = `url(${res.avatar})`;
+  });
+
+
+getCardList()
+  .then(res => {
+    if (res.ok) {
+      return res.json();
+    }
+    return Promise.reject(`Ошибка ${res.status}`);
+  })
+  .then(initialCards => {
+    initialCards.forEach((item) => placesList.append(addCard(item, funcObj)));
+  }) */
+//initialCards.forEach((item) => placesList.append(addCard(item, funcObj)));
+// берём данные профиля и карточки и добавляем на страницу
+Promise.all([getUserInfo(), getCardList()])
+  .then((resList) => {
+    const jsonList = [];
+    let errorRes;
+    for (const res of resList) {
+      if (res.ok) {
+        jsonList.push(res.json());
+      } else {
+        errorRes = res;
+        return Promise.reject(`Ошибка ${errorRes.status}`);
+      }
+    }
+    return Promise.all(jsonList);
+  })
+  .then((resList) => {
+    const [profileInfo, cardList] = resList;
+    profileTitle.textContent = profileInfo.name;
+    profileDescription.textContent = profileInfo.about;
+    profileImage.style.backgroundImage = `url(${profileInfo.avatar})`;
+
+    cardList.forEach((card) => placesList.append(addCard(card, funcObj)));
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+
+// валидация инпутов
 enableValidation(validationObj);
