@@ -75,7 +75,6 @@ Promise.all([getProfileInfoApi(), getCardListApi()])
     myId = profileInfo._id;
 
     cardList.forEach((card) => {
-      card.isRemoveButtonVisible = (card.owner._id === myId);
       card.myId = myId;
       placesList.append(addCard(card, funcObj));
     });
