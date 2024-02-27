@@ -63,10 +63,10 @@ function removeCardApi(cardId) {
   });
 }
 
-function likeCardApi(cardId, likeBool) {
-  const requestMethod = (likeBool) ? 'PUT' : 'DELETE';
+function likeCardApi(cardId, isAlreadyLiked) {
+  const requestMethod = (isAlreadyLiked) ? 'DELETE' : 'PUT';
   return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
-    method: `${requestMethod}`,
+    method: requestMethod,
     headers: {
       authorization: config.headers.authorization,
       'Content-Type': config.headers['Content-Type'],

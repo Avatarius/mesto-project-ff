@@ -1,6 +1,6 @@
 import "../pages/index.css";
 // import { initialCards } from "./cards";
-import { addCard, removeCard, likeCard } from "./card";
+import { addCard, removeCard, likeCard, updateLikeCounter } from "./card";
 import { openModal, closeModal } from "./modal";
 import { enableValidation, clearValidation } from "./validation";
 import { getProfileInfoApi, setProfileInfoApi, getCardListApi, addCardApi, removeCardApi, likeCardApi } from "./api";
@@ -76,7 +76,7 @@ Promise.all([getProfileInfoApi(), getCardListApi()])
 
     cardList.forEach((card) => {
       card.isRemoveButtonVisible = (card.owner._id === myId);
-      console.log(card);
+      card.myId = myId;
       placesList.append(addCard(card, funcObj));
     });
   })
@@ -99,7 +99,8 @@ const funcObj = {
 
   },
   likeFunc: function(evt, id) {
-    likeCardApi(id, !evt.target.classList.contains('card__like-button_is-active'))
+    const isAlreadyLiked = evt.target.classList.contains('card__like-button_is-active');
+    likeCardApi(id, isAlreadyLiked)
       .then(res => {
         if (res.ok) {
           return res.json();
@@ -107,8 +108,8 @@ const funcObj = {
         return Promise.reject(`Ошибка ${res.status}`);
       })
       .then(res => {
-        console.log(res);
         likeCard(evt);
+        updateLikeCounter(evt.target.nextElementSibling, res.likes.length);
       })
       .catch(err => console.log(err));
   },
@@ -160,6 +161,7 @@ function handleAddCardFormSubmit(evt) {
     name: addNewCardPopupObj.inputList[0].value,
     link: addNewCardPopupObj.inputList[1].value,
     likes: [],
+    myId,
   };
   addCardApi(newCardObj)
     .then(res => {
