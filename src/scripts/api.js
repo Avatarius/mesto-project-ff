@@ -63,5 +63,16 @@ function removeCardApi(cardId) {
   });
 }
 
+function likeCardApi(cardId, likeBool) {
+  const requestMethod = (likeBool) ? 'PUT' : 'DELETE';
+  return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
+    method: `${requestMethod}`,
+    headers: {
+      authorization: config.headers.authorization,
+      'Content-Type': config.headers['Content-Type'],
+    },
+  });
+}
 
-export { getProfileInfoApi, setProfileInfoApi, getCardListApi, addCardApi, removeCardApi };
+
+export { getProfileInfoApi, setProfileInfoApi, getCardListApi, addCardApi, removeCardApi, likeCardApi };

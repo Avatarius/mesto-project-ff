@@ -11,7 +11,6 @@ function addCard(cardObj, funcObj) {
   const removeBtn = cardElement.querySelector(".card__delete-button");
   const likeBtn = cardElement.querySelector(".card__like-button");
   const likeCounter = cardElement.querySelector('.card__like-counter');
-  console.log(isRemoveButtonVisible);
   if (!isRemoveButtonVisible) {
     removeBtn.classList.add('card__delete-button_hidden');
   }
@@ -24,7 +23,7 @@ function addCard(cardObj, funcObj) {
 
 
   removeBtn.addEventListener("click", (evt) => removeFunc(evt, id));
-  likeBtn.addEventListener("click", likeFunc);
+  likeBtn.addEventListener("click", (evt) => likeFunc(evt, id));
   img.addEventListener("click", imgClickFunc);
 
   return cardElement;

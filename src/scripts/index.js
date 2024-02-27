@@ -3,7 +3,7 @@ import "../pages/index.css";
 import { addCard, removeCard, likeCard } from "./card";
 import { openModal, closeModal } from "./modal";
 import { enableValidation, clearValidation } from "./validation";
-import { getProfileInfoApi, setProfileInfoApi, getCardListApi, addCardApi, removeCardApi } from "./api";
+import { getProfileInfoApi, setProfileInfoApi, getCardListApi, addCardApi, removeCardApi, likeCardApi } from "./api";
 
 // функции для генерации DOM объектов
 function constructAddOrEditPopupObj(popupClass) {
@@ -76,6 +76,7 @@ Promise.all([getProfileInfoApi(), getCardListApi()])
 
     cardList.forEach((card) => {
       card.isRemoveButtonVisible = (card.owner._id === myId);
+      console.log(card);
       placesList.append(addCard(card, funcObj));
     });
   })
@@ -97,7 +98,20 @@ const funcObj = {
       .catch(err => console.log(err));
 
   },
-  likeFunc: likeCard,
+  likeFunc: function(evt, id) {
+    likeCardApi(id, !evt.target.classList.contains('card__like-button_is-active'))
+      .then(res => {
+        if (res.ok) {
+          return res.json();
+        }
+        return Promise.reject(`Ошибка ${res.status}`);
+      })
+      .then(res => {
+        console.log(res);
+        likeCard(evt);
+      })
+      .catch(err => console.log(err));
+  },
   imgClickFunc: handleCardImgClick,
 };
 
