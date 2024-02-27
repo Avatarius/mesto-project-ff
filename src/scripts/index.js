@@ -3,7 +3,7 @@ import "../pages/index.css";
 import { addCard, removeCard, likeCard, updateLikeCounter } from "./card";
 import { openModal, closeModal } from "./modal";
 import { enableValidation, clearValidation } from "./validation";
-import { getProfileInfoApi, setProfileInfoApi, getCardListApi, addCardApi, removeCardApi, likeCardApi } from "./api";
+import { getProfileInfoApi, setProfileInfoApi, getCardListApi, addCardApi, removeCardApi, likeCardApi, setProfileAvatar } from "./api";
 
 // функции для генерации DOM объектов
 function constructAddOrEditPopupObj(popupClass) {
@@ -27,6 +27,7 @@ function constructImagePopupObj(popupClass) {
 // DOM объекты
 const addNewCardPopupObj = constructAddOrEditPopupObj(".popup_type_new-card");
 const editProfilePopupObj = constructAddOrEditPopupObj(".popup_type_edit");
+const editProfileAvatarPopupObj = constructAddOrEditPopupObj('.popup_type_avatar-edit');
 const imagePopupObj = constructImagePopupObj(".popup_type_image");
 // объект с настройками для валидации
 const validationObj = {
@@ -45,7 +46,7 @@ const placesList = document.querySelector(".places__list");
 // Данные профиля
 const profileTitle = document.querySelector(".profile__title");
 const profileDescription = document.querySelector(".profile__description");
-const profileImage = document.querySelector(".profile__image");
+const profileAvatar = document.querySelector(".profile__image");
 
 // кнопки открытия попапов
 const addCardButton = document.querySelector(".profile__add-button");
@@ -71,7 +72,7 @@ Promise.all([getProfileInfoApi(), getCardListApi()])
     const [profileInfo, cardList] = resList;
     profileTitle.textContent = profileInfo.name;
     profileDescription.textContent = profileInfo.about;
-    profileImage.style.backgroundImage = `url(${profileInfo.avatar})`;
+    profileAvatar.style.backgroundImage = `url(${profileInfo.avatar})`;
     myId = profileInfo._id;
 
     cardList.forEach((card) => {
@@ -116,7 +117,7 @@ const funcObj = {
 };
 
 // очистка формы добавления карточки при открытии попапа
-function clearAddNewCardForm(popupObj) {
+function clearForm(popupObj) {
   popupObj.form.reset();
 }
 
@@ -179,6 +180,25 @@ function handleAddCardFormSubmit(evt) {
   closeModal(addNewCardPopupObj.popup);
 }
 
+function handleEditAvatarFormSubmit(evt) {
+  evt.preventDefault();
+  const url = editProfileAvatarPopupObj.inputList[0].value;
+
+  setProfileAvatar(url)
+    .then(res => {
+      if (res.ok) {
+        return res.json();
+      }
+      return Promise.reject(`Ошибка ${res.status}`);
+    })
+    .then(res => {
+      profileAvatar.style.backgroundImage = `url(${res.avatar})`;
+    })
+    .catch(err => console.log(err));
+  closeModal(editProfileAvatarPopupObj.popup);
+
+}
+
 // обработчик клика по картинке карточки
 function handleCardImgClick(evt) {
   setCardImage(imagePopupObj, evt.target);
@@ -190,7 +210,7 @@ function handleCardImgClick(evt) {
 
 // открытие попапов
 addCardButton.addEventListener("click", function () {
-  clearAddNewCardForm(addNewCardPopupObj);
+  clearForm(addNewCardPopupObj);
   clearValidation(addNewCardPopupObj.form, validationObj);
   openModal(addNewCardPopupObj.popup);
 });
@@ -199,6 +219,10 @@ profileEditButton.addEventListener("click", function () {
   setProfileForm(editProfilePopupObj);
   openModal(editProfilePopupObj.popup);
 });
+profileAvatar.addEventListener('click', function() {
+  clearForm(editProfileAvatarPopupObj);
+  openModal(editProfileAvatarPopupObj.popup);
+})
 
 // submit
 addNewCardPopupObj.form.addEventListener("submit", handleAddCardFormSubmit);
@@ -206,6 +230,7 @@ editProfilePopupObj.form.addEventListener(
   "submit",
   handleEditProfileFormSubmit
 );
+editProfileAvatarPopupObj.form.addEventListener('submit', handleEditAvatarFormSubmit)
 
 
 

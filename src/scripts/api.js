@@ -74,5 +74,18 @@ function likeCardApi(cardId, isAlreadyLiked) {
   });
 }
 
+function setProfileAvatar(url) {
+  return fetch(`${config.baseUrl}/users/me/avatar`, {
+    method: 'PATCH',
+    headers: {
+      authorization: config.headers.authorization,
+      'Content-Type': config.headers['Content-Type'],
+    },
+    body: JSON.stringify({
+      avatar: url,
+    })
+  });
+}
 
-export { getProfileInfoApi, setProfileInfoApi, getCardListApi, addCardApi, removeCardApi, likeCardApi };
+
+export { getProfileInfoApi, setProfileInfoApi, getCardListApi, addCardApi, removeCardApi, likeCardApi, setProfileAvatar };
