@@ -3,7 +3,7 @@ import "../pages/index.css";
 import { addCard, removeCard, likeCard } from "./card";
 import { openModal, closeModal } from "./modal";
 import { enableValidation, clearValidation } from "./validation";
-import { getProfileInfoApi, setProfileInfoApi, getCardListApi, addCardApi } from "./api";
+import { getProfileInfoApi, setProfileInfoApi, getCardListApi, addCardApi, removeCardApi } from "./api";
 
 // функции для генерации DOM объектов
 function constructAddOrEditPopupObj(popupClass) {
@@ -51,9 +51,52 @@ const profileImage = document.querySelector(".profile__image");
 const addCardButton = document.querySelector(".profile__add-button");
 const profileEditButton = document.querySelector(".profile__edit-button");
 
+// берём данные профиля и карточки и добавляем на страницу
+let myId;
+Promise.all([getProfileInfoApi(), getCardListApi()])
+  .then((resList) => {
+    const jsonList = [];
+    let errorRes;
+    for (const res of resList) {
+      if (res.ok) {
+        jsonList.push(res.json());
+      } else {
+        errorRes = res;
+        return Promise.reject(`Ошибка ${errorRes.status}`);
+      }
+    }
+    return Promise.all(jsonList);
+  })
+  .then((resList) => {
+    const [profileInfo, cardList] = resList;
+    profileTitle.textContent = profileInfo.name;
+    profileDescription.textContent = profileInfo.about;
+    profileImage.style.backgroundImage = `url(${profileInfo.avatar})`;
+    myId = profileInfo._id;
+
+    cardList.forEach((card) => {
+      card.isRemoveButtonVisible = (card.owner._id === myId);
+      placesList.append(addCard(card, funcObj));
+    });
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+
 // Объект с функциями
 const funcObj = {
-  removeFunc: removeCard,
+  removeFunc: function(evt, id) {
+    removeCardApi(id)
+      .then(res => {
+        if (res.ok) {
+          return res.json();
+        }
+        return Promise.reject(`Ошибка ${res.status}`);
+      })
+      .then(() => removeCard(evt))
+      .catch(err => console.log(err));
+
+  },
   likeFunc: likeCard,
   imgClickFunc: handleCardImgClick,
 };
@@ -102,14 +145,19 @@ function handleAddCardFormSubmit(evt) {
   const newCardObj = {
     name: addNewCardPopupObj.inputList[0].value,
     link: addNewCardPopupObj.inputList[1].value,
+    likes: [],
   };
-  placesList.prepend(addCard(newCardObj, funcObj));
   addCardApi(newCardObj)
     .then(res => {
       if (res.ok) {
         return res.json();
       }
       return Promise.reject(`Ошибка ${res.status}`)
+    })
+    .then(res => {
+      res.name = newCardObj.name;
+      res.link = newCardObj.link;
+      placesList.prepend(addCard(res, funcObj))
     })
     .catch(err => console.log(err));
 
@@ -146,34 +194,7 @@ editProfilePopupObj.form.addEventListener(
 
 
 
-// берём данные профиля и карточки и добавляем на страницу
-Promise.all([getProfileInfoApi(), getCardListApi()])
-  .then((resList) => {
-    const jsonList = [];
-    let errorRes;
-    for (const res of resList) {
-      if (res.ok) {
-        jsonList.push(res.json());
-      } else {
-        errorRes = res;
-        return Promise.reject(`Ошибка ${errorRes.status}`);
-      }
-    }
-    return Promise.all(jsonList);
-  })
-  .then((resList) => {
-    const [profileInfo, cardList] = resList;
-    profileTitle.textContent = profileInfo.name;
-    profileDescription.textContent = profileInfo.about;
-    profileImage.style.backgroundImage = `url(${profileInfo.avatar})`;
 
-    cardList.forEach((card) => {
-      placesList.append(addCard(card, funcObj));
-    });
-  })
-  .catch((error) => {
-    console.log(error);
-  });
 
 
 // валидация инпутов

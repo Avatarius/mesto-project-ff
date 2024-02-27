@@ -53,5 +53,15 @@ function addCardApi(cardObj) {
   });
 }
 
+function removeCardApi(cardId) {
+  return fetch(`${config.baseUrl}/cards/${cardId}`, {
+    method: 'DELETE',
+    headers: {
+      authorization: config.headers.authorization,
+      'Content-Type': config.headers['Content-Type'],
+    },
+  });
+}
 
-export { getProfileInfoApi, setProfileInfoApi, getCardListApi, addCardApi };
+
+export { getProfileInfoApi, setProfileInfoApi, getCardListApi, addCardApi, removeCardApi };
