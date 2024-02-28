@@ -19,7 +19,6 @@ function addCard(cardObj, funcObj) {
     likeBtn.classList.add('card__like-button_is-active');
   }
   updateLikeCounter(likeCounter, cardObj.likes.length);
-
   title.textContent = name;
   img.alt = name;
   img.src = link;

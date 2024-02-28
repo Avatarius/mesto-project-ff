@@ -140,9 +140,16 @@ function setCardImage(popupObj, img) {
   popupObj.caption.textContent = img.alt;
 }
 
+
+// во время загрузки меняем текст кнопки
+function renderLoading(isLoading, btn) {
+  const buttonText = (isLoading) ? 'Сохранение...' : 'Сохранить';
+  btn.textContent = buttonText;
+}
 // обработчики submit
 function handleEditProfileFormSubmit(evt) {
   evt.preventDefault();
+  renderLoading(true, editProfilePopupObj.button);
   setProfile(editProfilePopupObj);
   setProfileInfoApi({name: editProfilePopupObj.inputList[0].value, about: editProfilePopupObj.inputList[1].value})
     .then(res => {
@@ -151,17 +158,20 @@ function handleEditProfileFormSubmit(evt) {
       }
       return Promise.reject(`Ошибка ${res.status}`)
     })
-    .catch(err => console.log(err));
-  closeModal(editProfilePopupObj.popup);
+    .catch(err => console.log(err))
+    .finally(() => {
+      closeModal(editProfilePopupObj.popup);
+      setTimeout(() => renderLoading(false, editProfilePopupObj.button), 600);
+    });
 }
 
 function handleAddCardFormSubmit(evt) {
   evt.preventDefault();
+  renderLoading(true, addNewCardPopupObj.button);
   const newCardObj = {
     name: addNewCardPopupObj.inputList[0].value,
     link: addNewCardPopupObj.inputList[1].value,
     likes: [],
-    myId,
   };
   addCardApi(newCardObj)
     .then(res => {
@@ -173,15 +183,20 @@ function handleAddCardFormSubmit(evt) {
     .then(res => {
       res.name = newCardObj.name;
       res.link = newCardObj.link;
+      res.myId = myId;
       placesList.prepend(addCard(res, funcObj))
     })
-    .catch(err => console.log(err));
+    .catch(err => console.log(err))
+    .finally(() => {
+      closeModal(addNewCardPopupObj.popup);
+      setTimeout(() => renderLoading(false, addNewCardPopupObj.button), 600);
+    });
 
-  closeModal(addNewCardPopupObj.popup);
 }
 
 function handleEditAvatarFormSubmit(evt) {
   evt.preventDefault();
+  renderLoading(true, editProfileAvatarPopupObj.button);
   const url = editProfileAvatarPopupObj.inputList[0].value;
 
   setProfileAvatar(url)
@@ -194,8 +209,11 @@ function handleEditAvatarFormSubmit(evt) {
     .then(res => {
       profileAvatar.style.backgroundImage = `url(${res.avatar})`;
     })
-    .catch(err => console.log(err));
-  closeModal(editProfileAvatarPopupObj.popup);
+    .catch(err => console.log(err))
+    .finally(() => {
+      closeModal(editProfileAvatarPopupObj.popup);
+      setTimeout(() => renderLoading(false, editProfileAvatarPopupObj.button), 600);
+    });
 
 }
 
