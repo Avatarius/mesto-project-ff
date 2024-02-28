@@ -3,7 +3,15 @@ import "../pages/index.css";
 import { addCard, removeCard, likeCard, updateLikeCounter } from "./card";
 import { openModal, closeModal } from "./modal";
 import { enableValidation, clearValidation } from "./validation";
-import { getProfileInfoApi, setProfileInfoApi, getCardListApi, addCardApi, removeCardApi, likeCardApi, setProfileAvatar } from "./api";
+import {
+  getProfileInfoApi,
+  setProfileInfoApi,
+  getCardListApi,
+  addCardApi,
+  removeCardApi,
+  likeCardApi,
+  setProfileAvatar,
+} from "./api";
 
 // функции для генерации DOM объектов
 function constructAddOrEditPopupObj(popupClass) {
@@ -27,8 +35,12 @@ function constructImagePopupObj(popupClass) {
 // DOM объекты
 const addNewCardPopupObj = constructAddOrEditPopupObj(".popup_type_new-card");
 const editProfilePopupObj = constructAddOrEditPopupObj(".popup_type_edit");
-const editProfileAvatarPopupObj = constructAddOrEditPopupObj('.popup_type_avatar-edit');
-const removeCardPopupObj = constructAddOrEditPopupObj('.popup_type_remove-card');
+const editProfileAvatarPopupObj = constructAddOrEditPopupObj(
+  ".popup_type_avatar-edit"
+);
+const removeCardPopupObj = constructAddOrEditPopupObj(
+  ".popup_type_remove-card"
+);
 const imagePopupObj = constructImagePopupObj(".popup_type_image");
 // объект с настройками для валидации
 const validationObj = {
@@ -87,40 +99,40 @@ Promise.all([getProfileInfoApi(), getCardListApi()])
 
 // Объект с функциями
 const funcObj = {
-  removeFunc: function(evt, id) {
-    openModal(removeCardPopupObj.popup);
-    removeCardPopupObj.form.addEventListener('submit', function(event) {
+  removeFunc: function (evt, id) {
+    handleCardRemoveSubmit = function (event) {
       event.preventDefault();
       removeCardApi(id)
-      .then(res => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Ошибка ${res.status}`);
-      })
-      .then(() => {
-        removeCard(evt);
-      })
-      .catch(err => console.log(err))
-      .finally(() => closeModal(removeCardPopupObj.popup));
-    })
-
-
+        .then((res) => {
+          if (res.ok) {
+            return res.json();
+          }
+          return Promise.reject(`Ошибка ${res.status}`);
+        })
+        .then(() => {
+          removeCard(evt);
+        })
+        .catch((err) => console.log(err))
+        .finally(() => closeModal(removeCardPopupObj.popup));
+    };
+    openModal(removeCardPopupObj.popup);
   },
-  likeFunc: function(evt, id) {
-    const isAlreadyLiked = evt.target.classList.contains('card__like-button_is-active');
+  likeFunc: function (evt, id) {
+    const isAlreadyLiked = evt.target.classList.contains(
+      "card__like-button_is-active"
+    );
     likeCardApi(id, isAlreadyLiked)
-      .then(res => {
+      .then((res) => {
         if (res.ok) {
           return res.json();
         }
         return Promise.reject(`Ошибка ${res.status}`);
       })
-      .then(res => {
+      .then((res) => {
         likeCard(evt);
         updateLikeCounter(evt.target.nextElementSibling, res.likes.length);
       })
-      .catch(err => console.log(err));
+      .catch((err) => console.log(err));
   },
   imgClickFunc: handleCardImgClick,
 };
@@ -149,10 +161,9 @@ function setCardImage(popupObj, img) {
   popupObj.caption.textContent = img.alt;
 }
 
-
 // во время загрузки меняем текст кнопки
 function renderLoading(isLoading, btn) {
-  const buttonText = (isLoading) ? 'Сохранение...' : 'Сохранить';
+  const buttonText = isLoading ? "Сохранение..." : "Сохранить";
   btn.textContent = buttonText;
 }
 // обработчики submit
@@ -160,14 +171,17 @@ function handleEditProfileFormSubmit(evt) {
   evt.preventDefault();
   renderLoading(true, editProfilePopupObj.button);
   setProfile(editProfilePopupObj);
-  setProfileInfoApi({name: editProfilePopupObj.inputList[0].value, about: editProfilePopupObj.inputList[1].value})
-    .then(res => {
+  setProfileInfoApi({
+    name: editProfilePopupObj.inputList[0].value,
+    about: editProfilePopupObj.inputList[1].value,
+  })
+    .then((res) => {
       if (res.ok) {
         return res.json();
       }
-      return Promise.reject(`Ошибка ${res.status}`)
+      return Promise.reject(`Ошибка ${res.status}`);
     })
-    .catch(err => console.log(err))
+    .catch((err) => console.log(err))
     .finally(() => {
       closeModal(editProfilePopupObj.popup);
       setTimeout(() => renderLoading(false, editProfilePopupObj.button), 600);
@@ -183,24 +197,23 @@ function handleAddCardFormSubmit(evt) {
     likes: [],
   };
   addCardApi(newCardObj)
-    .then(res => {
+    .then((res) => {
       if (res.ok) {
         return res.json();
       }
-      return Promise.reject(`Ошибка ${res.status}`)
+      return Promise.reject(`Ошибка ${res.status}`);
     })
-    .then(res => {
+    .then((res) => {
       res.name = newCardObj.name;
       res.link = newCardObj.link;
       res.myId = myId;
-      placesList.prepend(addCard(res, funcObj))
+      placesList.prepend(addCard(res, funcObj));
     })
-    .catch(err => console.log(err))
+    .catch((err) => console.log(err))
     .finally(() => {
       closeModal(addNewCardPopupObj.popup);
       setTimeout(() => renderLoading(false, addNewCardPopupObj.button), 600);
     });
-
 }
 
 function handleEditAvatarFormSubmit(evt) {
@@ -209,22 +222,28 @@ function handleEditAvatarFormSubmit(evt) {
   const url = editProfileAvatarPopupObj.inputList[0].value;
 
   setProfileAvatar(url)
-    .then(res => {
+    .then((res) => {
       if (res.ok) {
         return res.json();
       }
       return Promise.reject(`Ошибка ${res.status}`);
     })
-    .then(res => {
+    .then((res) => {
       profileAvatar.style.backgroundImage = `url(${res.avatar})`;
     })
-    .catch(err => console.log(err))
+    .catch((err) => console.log(err))
     .finally(() => {
       closeModal(editProfileAvatarPopupObj.popup);
-      setTimeout(() => renderLoading(false, editProfileAvatarPopupObj.button), 600);
+      setTimeout(
+        () => renderLoading(false, editProfileAvatarPopupObj.button),
+        600
+      );
     });
-
 }
+
+let handleCardRemoveSubmit = function (evt) {
+  evt.preventDefault();
+};
 
 // обработчик клика по картинке карточки
 function handleCardImgClick(evt) {
@@ -246,10 +265,10 @@ profileEditButton.addEventListener("click", function () {
   setProfileForm(editProfilePopupObj);
   openModal(editProfilePopupObj.popup);
 });
-profileAvatar.addEventListener('click', function() {
+profileAvatar.addEventListener("click", function () {
   clearForm(editProfileAvatarPopupObj);
   openModal(editProfileAvatarPopupObj.popup);
-})
+});
 
 // submit
 addNewCardPopupObj.form.addEventListener("submit", handleAddCardFormSubmit);
@@ -257,12 +276,13 @@ editProfilePopupObj.form.addEventListener(
   "submit",
   handleEditProfileFormSubmit
 );
-editProfileAvatarPopupObj.form.addEventListener('submit', handleEditAvatarFormSubmit)
-
-
-
-
-
+editProfileAvatarPopupObj.form.addEventListener(
+  "submit",
+  handleEditAvatarFormSubmit
+);
+removeCardPopupObj.form.addEventListener("submit", (evt) =>
+  handleCardRemoveSubmit(evt)
+);
 
 // валидация инпутов
 enableValidation(validationObj);
