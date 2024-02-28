@@ -4,19 +4,26 @@ const cardTemplate = document.querySelector("#card-template").content;
 function addCard(cardObj, funcObj) {
   const cardElement = cardTemplate.querySelector(".card").cloneNode(true);
 
-  const { owner: {_id: ownerId}, _id: cardId, myId, name, link, likes } = cardObj;
+  const {
+    owner: { _id: ownerId },
+    _id: cardId,
+    myId,
+    name,
+    link,
+    likes,
+  } = cardObj;
   const { removeFunc, likeFunc, imgClickFunc } = funcObj;
   const title = cardElement.querySelector(".card__title");
   const img = cardElement.querySelector(".card__image");
   const removeBtn = cardElement.querySelector(".card__delete-button");
   const likeBtn = cardElement.querySelector(".card__like-button");
-  const likeCounter = cardElement.querySelector('.card__like-counter');
+  const likeCounter = cardElement.querySelector(".card__like-counter");
   // обновим состояние элементов карточки
   if (ownerId !== myId) {
-    removeBtn.classList.add('card__delete-button_hidden');
+    removeBtn.classList.add("card__delete-button_hidden");
   }
-  if (likes.length > 0 && likes.some(item => item._id === myId)) {
-    likeBtn.classList.add('card__like-button_is-active');
+  if (likes.length > 0 && likes.some((item) => item._id === myId)) {
+    likeBtn.classList.add("card__like-button_is-active");
   }
   updateLikeCounter(likeCounter, cardObj.likes.length);
   title.textContent = name;

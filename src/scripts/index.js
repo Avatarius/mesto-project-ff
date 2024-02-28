@@ -59,9 +59,6 @@ const funcObj = {
       removeCardApi(id)
         .then(() => {
           removeCard(evt);
-        })
-        .catch((err) => console.log(`Не удалось удалить карточку. ${err}`))
-        .finally(() => {
           closeModal(removeCardPopupObj.popup);
           setTimeout(
             () =>
@@ -73,7 +70,9 @@ const funcObj = {
               ),
             600
           );
-        });
+        })
+        .catch((err) => console.log(`Не удалось удалить карточку. ${err}`))
+
     };
     openModal(removeCardPopupObj.popup);
   },
