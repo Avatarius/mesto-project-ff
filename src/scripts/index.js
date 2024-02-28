@@ -14,12 +14,10 @@ import {
 
 // список с карточками
 const placesList = document.querySelector(".places__list");
-
 // Данные профиля
 const profileTitle = document.querySelector(".profile__title");
 const profileDescription = document.querySelector(".profile__description");
 const profileAvatar = document.querySelector(".profile__image");
-
 // кнопки открытия попапов
 const addCardButton = document.querySelector(".profile__add-button");
 const profileEditButton = document.querySelector(".profile__edit-button");
@@ -62,8 +60,20 @@ const funcObj = {
         .then(() => {
           removeCard(evt);
         })
-        .catch((err) => console.log(err))
-        .finally(() => closeModal(removeCardPopupObj.popup));
+        .catch((err) => console.log(`Не удалось удалить карточку. ${err}`))
+        .finally(() => {
+          closeModal(removeCardPopupObj.popup);
+          setTimeout(
+            () =>
+              renderLoading(
+                false,
+                removeCardPopupObj.button,
+                "Да",
+                "Идёт удаление"
+              ),
+            600
+          );
+        });
     };
     openModal(removeCardPopupObj.popup);
   },
@@ -85,12 +95,13 @@ const funcObj = {
 let myId;
 Promise.all([getProfileInfoApi(), getCardListApi()])
   .then((resList) => {
+    // обновляем профиль
     const [profileInfo, cardList] = resList;
     profileTitle.textContent = profileInfo.name;
     profileDescription.textContent = profileInfo.about;
     profileAvatar.style.backgroundImage = `url(${profileInfo.avatar})`;
     myId = profileInfo._id;
-
+    // показываем карточки
     cardList.forEach((card) => {
       card.myId = myId;
       placesList.append(addCard(card, funcObj));
@@ -101,8 +112,13 @@ Promise.all([getProfileInfoApi(), getCardListApi()])
   });
 
 // во время загрузки меняем текст кнопки
-function renderLoading(isLoading, btn) {
-  const buttonText = isLoading ? "Сохранение..." : "Сохранить";
+function renderLoading(
+  isLoading,
+  btn,
+  defaultText = "Сохранить",
+  newText = "Сохранение..."
+) {
+  const buttonText = isLoading ? newText : defaultText;
   btn.textContent = buttonText;
 }
 // обработчики submit
@@ -112,10 +128,7 @@ function handleEditProfileFormSubmit(evt) {
 
   const name = editProfilePopupObj.inputList[0].value;
   const about = editProfilePopupObj.inputList[1].value;
-  setProfileInfoApi({
-    name,
-    about,
-  })
+  setProfileInfoApi(name, about)
     .then(() => {
       profileTitle.textContent = name;
       profileDescription.textContent = about;
@@ -127,17 +140,16 @@ function handleEditProfileFormSubmit(evt) {
     });
 }
 // добавляем новую карточку
-function handleAddCardFormSubmit(evt) { // отрефакторить
+function handleAddCardFormSubmit(evt) {
+  // отрефакторить
   evt.preventDefault();
   renderLoading(true, addNewCardPopupObj.button);
-  const newCardObj = {
-    name: addNewCardPopupObj.inputList[0].value,
-    link: addNewCardPopupObj.inputList[1].value,
-  };
-  addCardApi(newCardObj)
+  const name = addNewCardPopupObj.inputList[0].value;
+  const link = addNewCardPopupObj.inputList[1].value;
+  addCardApi(name, link)
     .then((res) => {
-      res.name = newCardObj.name;
-      res.link = newCardObj.link;
+      res.name = name;
+      res.link = link;
       res.myId = myId;
       placesList.prepend(addCard(res, funcObj));
     })
@@ -147,6 +159,10 @@ function handleAddCardFormSubmit(evt) { // отрефакторить
       setTimeout(() => renderLoading(false, addNewCardPopupObj.button), 600);
     });
 }
+// фунция для удаления карточки, заменяется в funcObj
+let handleCardRemoveSubmit = function (evt) {
+  evt.preventDefault();
+};
 // меняем аватарку
 function handleEditAvatarFormSubmit(evt) {
   evt.preventDefault();
@@ -166,10 +182,7 @@ function handleEditAvatarFormSubmit(evt) {
       );
     });
 }
-// фунция для удаления карточки, заменяется в funcObj
-let handleCardRemoveSubmit = function (evt) {
-  evt.preventDefault();
-};
+
 // обработчик клика по картинке карточки
 function handleCardImgClick(evt) {
   imagePopupObj.img.src = evt.target.src;
@@ -191,7 +204,7 @@ profileEditButton.addEventListener("click", function () {
   openModal(editProfilePopupObj.popup);
 });
 profileAvatar.addEventListener("click", function () {
-  editProfilePopupObj.form.reset();
+  editProfileAvatarPopupObj.form.reset();
   openModal(editProfileAvatarPopupObj.popup);
 });
 
@@ -205,7 +218,11 @@ editProfileAvatarPopupObj.form.addEventListener(
   "submit",
   handleEditAvatarFormSubmit
 );
-removeCardPopupObj.form.addEventListener("submit", handleCardRemoveSubmit);
+removeCardPopupObj.form.addEventListener("submit", (evt) => {
+  evt.preventDefault();
+  renderLoading(true, removeCardPopupObj.button, "Да", "Идёт удаление");
+  handleCardRemoveSubmit(evt);
+});
 
 // валидация инпутов
 enableValidation(validationObj);

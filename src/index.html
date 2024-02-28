@@ -25,9 +25,9 @@
 
           ></div>
           <div class="profile__info">
-            <h1 class="profile__title">Жак-Ив Кусто</h1>
+            <h1 class="profile__title"></h1>
             <button class="profile__edit-button" type="button"></button>
-            <p class="profile__description">Исследователь океана</p>
+            <p class="profile__description"></p>
           </div>
           <button class="profile__add-button" type="button"></button>
         </section>
@@ -55,7 +55,6 @@
                 maxlength="40"
                 pattern="^[a-zA-Zа-яА-ЯёЁ\-\s]+$"
                 required
-                data-value-missing-error="Вы пропустили это поле."
                 data-pattern-mismatch-error="Разрешены только латинские и кириллические буквы, дефисы и пробелы."
               />
               <span class="popup__input-error profile-name-error"></span>
@@ -72,7 +71,6 @@
                 maxlength="200"
                 pattern="^[a-zA-Zа-яА-ЯёЁ\-\s]+$"
                 required
-                data-value-missing-error="Вы пропустили это поле."
                 data-pattern-mismatch-error="Разрешены только латинские и кириллические буквы, дефисы и пробелы."
               />
               <span class="popup__input-error profile-description-error"></span>
@@ -100,7 +98,6 @@
                 maxlength="30"
                 pattern="^[a-zA-Zа-яА-ЯёЁ\-\s]+$"
                 required
-                data-value-missing-error="Вы пропустили это поле."
                 data-pattern-mismatch-error="Разрешены только латинские и кириллические буквы, дефисы и пробелы."
               />
               <span class="popup__input-error place-name-error"></span>
@@ -113,7 +110,6 @@
                 class="popup__input popup__input_type_url"
                 placeholder="Ссылка на картинку"
                 required
-                data-value-missing-error="Вы пропустили это поле."
               />
               <span class="popup__input-error place-link-error"></span>
             </label>
@@ -137,7 +133,6 @@
                 class="popup__input popup__input_type_edit-avatar"
                 placeholder="Ссылка на аватар"
                 required
-                data-value-missing-error="Вы пропустили это поле."
                 data-pattern-mismatch-error="Разрешены только латинские и кириллические буквы, дефисы и пробелы."
               />
               <span class="popup__input-error avatar-link-error"></span>

@@ -4,37 +4,35 @@ function enableValidation(settingsObj) {
   );
 
   formList.forEach((formElement) => {
-    const inputList = Array.from(
-      formElement.querySelectorAll(settingsObj.inputSelector)
-    );
-    const buttonElement = formElement.querySelector(
-      settingsObj.submitButtonSelector
-    );
-    setEventListeners(formElement, inputList, buttonElement, settingsObj);
+    setEventListeners(formElement, settingsObj);
   });
 }
 
 function clearValidation(formElement, settingsObj) {
-  const errorList = Array.from(
-    formElement.querySelectorAll(settingsObj.errorSelector)
-  );
   const inputList = Array.from(
     formElement.querySelectorAll(settingsObj.inputSelector)
   );
   const button = formElement.querySelector(settingsObj.submitButtonSelector);
   inputList.forEach((inputElement, index) => {
+    const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
     hideInputError(
-      errorList[index],
+      errorElement,
       inputElement,
       settingsObj.inputErrorClass,
       settingsObj.errorActiveClass
     );
-    setCustomValidity(inputElement, "");
+    inputElement.setCustomValidity("");
   });
   toggleButtonState(inputList, button, settingsObj.inactiveButtonClass);
 }
 
-function setEventListeners(formElement, inputList, buttonElement, settingsObj) {
+function setEventListeners(formElement, settingsObj) {
+  const inputList = Array.from(
+    formElement.querySelectorAll(settingsObj.inputSelector)
+  );
+  const buttonElement = formElement.querySelector(
+    settingsObj.submitButtonSelector
+  );
   toggleButtonState(inputList, buttonElement, settingsObj.inactiveButtonClass);
   inputList.forEach((inputElement) => {
     inputElement.addEventListener("input", function () {
@@ -48,21 +46,11 @@ function setEventListeners(formElement, inputList, buttonElement, settingsObj) {
   });
 }
 
-function setCustomValidity(inputElement, errorMessage) {
-  inputElement.setCustomValidity(errorMessage);
-}
-
 function checkInputValidity(formElement, inputElement, settingsObj) {
-  if (inputElement.validity.valueMissing) {
-    setCustomValidity(inputElement, inputElement.dataset.valueMissingError);
-  } else {
-    setCustomValidity(inputElement, "");
-  }
-
   if (inputElement.validity.patternMismatch) {
-    setCustomValidity(inputElement, inputElement.dataset.patternMismatchError);
+    inputElement.setCustomValidity(inputElement.dataset.patternMismatchError);
   } else {
-    setCustomValidity(inputElement, "");
+    inputElement.setCustomValidity("");
   }
   // основная проверка на валидность
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`);

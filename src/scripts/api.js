@@ -34,7 +34,7 @@ function getCardListApi() {
   });
 }
 
-function setProfileInfoApi(profileObj) {
+function setProfileInfoApi(name, about) {
   return fetch(`${config.baseUrl}/users/me`, {
     method: "PATCH",
     headers: {
@@ -42,8 +42,8 @@ function setProfileInfoApi(profileObj) {
       "Content-Type": config.headers["Content-Type"],
     },
     body: JSON.stringify({
-      name: profileObj.name,
-      about: profileObj.about,
+      name,
+      about,
     }),
   }).then((res) => {
     if (res.ok) {
@@ -53,7 +53,7 @@ function setProfileInfoApi(profileObj) {
   });
 }
 
-function addCardApi(cardObj) {
+function addCardApi(name, link) {
   return fetch(`${config.baseUrl}/cards`, {
     method: "POST",
     headers: {
@@ -61,8 +61,8 @@ function addCardApi(cardObj) {
       "Content-Type": config.headers["Content-Type"],
     },
     body: JSON.stringify({
-      name: cardObj.name,
-      link: cardObj.link,
+      name,
+      link,
     }),
   }).then((res) => {
     if (res.ok) {
