@@ -2,8 +2,8 @@ const cardTemplate = document.querySelector("#card-template").content;
 
 // Функция создания карточки
 function addCard(cardObj, funcObj) {
-
   const cardElement = cardTemplate.querySelector(".card").cloneNode(true);
+
   const { owner: {_id: ownerId}, _id: cardId, myId, name, link, likes } = cardObj;
   const { removeFunc, likeFunc, imgClickFunc } = funcObj;
   const title = cardElement.querySelector(".card__title");

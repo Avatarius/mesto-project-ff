@@ -1,5 +1,4 @@
 import "../pages/index.css";
-// import { initialCards } from "./cards";
 import { addCard, removeCard, likeCard, updateLikeCounter } from "./card";
 import { openModal, closeModal } from "./modal";
 import { enableValidation, clearValidation } from "./validation";
@@ -13,46 +12,6 @@ import {
   setProfileAvatar,
 } from "./api";
 
-// функции для генерации DOM объектов
-function constructAddOrEditPopupObj(popupClass) {
-  const popup = document.querySelector(popupClass);
-  return {
-    popup,
-    form: popup.querySelector(".popup__form"),
-    inputList: popup.querySelectorAll(".popup__input"),
-    button: popup.querySelector(".popup__button"),
-  };
-}
-
-function constructImagePopupObj(popupClass) {
-  const popup = document.querySelector(popupClass);
-  return {
-    popup,
-    img: popup.querySelector(".popup__image"),
-    caption: popup.querySelector(".popup__caption"),
-  };
-}
-// DOM объекты
-const addNewCardPopupObj = constructAddOrEditPopupObj(".popup_type_new-card");
-const editProfilePopupObj = constructAddOrEditPopupObj(".popup_type_edit");
-const editProfileAvatarPopupObj = constructAddOrEditPopupObj(
-  ".popup_type_avatar-edit"
-);
-const removeCardPopupObj = constructAddOrEditPopupObj(
-  ".popup_type_remove-card"
-);
-const imagePopupObj = constructImagePopupObj(".popup_type_image");
-// объект с настройками для валидации
-const validationObj = {
-  formSelector: ".popup__form",
-  inputSelector: ".popup__input",
-  submitButtonSelector: ".popup__button",
-  inactiveButtonClass: "popup__button_inactive",
-  errorSelector: ".popup__input-error",
-  inputErrorClass: "popup__input_error",
-  errorActiveClass: "popup__input-error_active",
-};
-
 // список с карточками
 const placesList = document.querySelector(".places__list");
 
@@ -65,25 +24,35 @@ const profileAvatar = document.querySelector(".profile__image");
 const addCardButton = document.querySelector(".profile__add-button");
 const profileEditButton = document.querySelector(".profile__edit-button");
 
-// берём данные профиля и карточки и добавляем на страницу
-let myId;
-Promise.all([getProfileInfoApi(), getCardListApi()])
-  .then((resList) => {
-    const [profileInfo, cardList] = resList;
-    profileTitle.textContent = profileInfo.name;
-    profileDescription.textContent = profileInfo.about;
-    profileAvatar.style.backgroundImage = `url(${profileInfo.avatar})`;
-    myId = profileInfo._id;
+// функция для генерации объектов со всеми нужными элементами попапа
+function constructPopupObj(popupClass) {
+  const popup = document.querySelector(popupClass);
+  return {
+    popup,
+    form: popup.querySelector(".popup__form"),
+    inputList: popup.querySelectorAll(".popup__input"),
+    button: popup.querySelector(".popup__button"),
+    img: popup.querySelector(".popup__image"),
+    caption: popup.querySelector(".popup__caption"),
+  };
+}
 
-    cardList.forEach((card) => {
-      card.myId = myId;
-      placesList.append(addCard(card, funcObj));
-    });
-  })
-  .catch((error) => {
-    console.log(error);
-  });
-
+// попап объекты
+const addNewCardPopupObj = constructPopupObj(".popup_type_new-card");
+const editProfilePopupObj = constructPopupObj(".popup_type_edit");
+const editProfileAvatarPopupObj = constructPopupObj(".popup_type_avatar-edit");
+const removeCardPopupObj = constructPopupObj(".popup_type_remove-card");
+const imagePopupObj = constructPopupObj(".popup_type_image");
+// объект с настройками для валидации
+const validationObj = {
+  formSelector: ".popup__form",
+  inputSelector: ".popup__input",
+  submitButtonSelector: ".popup__button",
+  inactiveButtonClass: "popup__button_inactive",
+  errorSelector: ".popup__input-error",
+  inputErrorClass: "popup__input_error",
+  errorActiveClass: "popup__input-error_active",
+};
 // Объект с функциями
 const funcObj = {
   removeFunc: function (evt, id) {
@@ -112,29 +81,24 @@ const funcObj = {
   imgClickFunc: handleCardImgClick,
 };
 
-// очистка формы добавления карточки при открытии попапа
-function clearForm(popupObj) {
-  popupObj.form.reset();
-}
+// берём данные профиля и карточки и добавляем на страницу
+let myId;
+Promise.all([getProfileInfoApi(), getCardListApi()])
+  .then((resList) => {
+    const [profileInfo, cardList] = resList;
+    profileTitle.textContent = profileInfo.name;
+    profileDescription.textContent = profileInfo.about;
+    profileAvatar.style.backgroundImage = `url(${profileInfo.avatar})`;
+    myId = profileInfo._id;
 
-// Заполнить форму изменения профиля данными со страницы при открытии попапа
-function setProfileForm(popupObj) {
-  popupObj.inputList[0].value = profileTitle.textContent;
-  popupObj.inputList[1].value = profileDescription.textContent;
-}
-
-// Изменение данных профиля при сабмите
-function setProfile(popupObj) {
-  profileTitle.textContent = popupObj.inputList[0].value;
-  profileDescription.textContent = popupObj.inputList[1].value;
-}
-
-// задать картинку попапа с картинкой при открытии попапа
-function setCardImage(popupObj, img) {
-  popupObj.img.src = img.src;
-  popupObj.img.alt = img.alt;
-  popupObj.caption.textContent = img.alt;
-}
+    cardList.forEach((card) => {
+      card.myId = myId;
+      placesList.append(addCard(card, funcObj));
+    });
+  })
+  .catch((err) => {
+    console.log(`Не удалось загрузить данные. ${err}`);
+  });
 
 // во время загрузки меняем текст кнопки
 function renderLoading(isLoading, btn) {
@@ -146,12 +110,15 @@ function handleEditProfileFormSubmit(evt) {
   evt.preventDefault();
   renderLoading(true, editProfilePopupObj.button);
 
+  const name = editProfilePopupObj.inputList[0].value;
+  const about = editProfilePopupObj.inputList[1].value;
   setProfileInfoApi({
-    name: editProfilePopupObj.inputList[0].value,
-    about: editProfilePopupObj.inputList[1].value,
+    name,
+    about,
   })
     .then(() => {
-      setProfile(editProfilePopupObj);
+      profileTitle.textContent = name;
+      profileDescription.textContent = about;
     })
     .catch((err) => console.log(`Не удалось изменить профиль. ${err}`))
     .finally(() => {
@@ -159,14 +126,13 @@ function handleEditProfileFormSubmit(evt) {
       setTimeout(() => renderLoading(false, editProfilePopupObj.button), 600);
     });
 }
-
-function handleAddCardFormSubmit(evt) {
+// добавляем новую карточку
+function handleAddCardFormSubmit(evt) { // отрефакторить
   evt.preventDefault();
   renderLoading(true, addNewCardPopupObj.button);
   const newCardObj = {
     name: addNewCardPopupObj.inputList[0].value,
     link: addNewCardPopupObj.inputList[1].value,
-    likes: [],
   };
   addCardApi(newCardObj)
     .then((res) => {
@@ -181,7 +147,7 @@ function handleAddCardFormSubmit(evt) {
       setTimeout(() => renderLoading(false, addNewCardPopupObj.button), 600);
     });
 }
-
+// меняем аватарку
 function handleEditAvatarFormSubmit(evt) {
   evt.preventDefault();
   renderLoading(true, editProfileAvatarPopupObj.button);
@@ -200,30 +166,32 @@ function handleEditAvatarFormSubmit(evt) {
       );
     });
 }
-
+// фунция для удаления карточки, заменяется в funcObj
 let handleCardRemoveSubmit = function (evt) {
   evt.preventDefault();
 };
-
 // обработчик клика по картинке карточки
 function handleCardImgClick(evt) {
-  setCardImage(imagePopupObj, evt.target);
+  imagePopupObj.img.src = evt.target.src;
+  imagePopupObj.img.alt = evt.target.alt;
+  imagePopupObj.caption.textContent = evt.target.alt;
   openModal(imagePopupObj.popup);
 }
 
 // открытие попапов
 addCardButton.addEventListener("click", function () {
-  clearForm(addNewCardPopupObj);
+  addNewCardPopupObj.form.reset();
   clearValidation(addNewCardPopupObj.form, validationObj);
   openModal(addNewCardPopupObj.popup);
 });
 profileEditButton.addEventListener("click", function () {
   clearValidation(editProfilePopupObj.form, validationObj);
-  setProfileForm(editProfilePopupObj);
+  editProfilePopupObj.inputList[0].value = profileTitle.textContent;
+  editProfilePopupObj.inputList[1].value = profileDescription.textContent;
   openModal(editProfilePopupObj.popup);
 });
 profileAvatar.addEventListener("click", function () {
-  clearForm(editProfileAvatarPopupObj);
+  editProfilePopupObj.form.reset();
   openModal(editProfileAvatarPopupObj.popup);
 });
 
@@ -237,9 +205,7 @@ editProfileAvatarPopupObj.form.addEventListener(
   "submit",
   handleEditAvatarFormSubmit
 );
-removeCardPopupObj.form.addEventListener("submit", (evt) =>
-  handleCardRemoveSubmit(evt)
-);
+removeCardPopupObj.form.addEventListener("submit", handleCardRemoveSubmit);
 
 // валидация инпутов
 enableValidation(validationObj);
