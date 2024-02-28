@@ -28,6 +28,7 @@ function constructImagePopupObj(popupClass) {
 const addNewCardPopupObj = constructAddOrEditPopupObj(".popup_type_new-card");
 const editProfilePopupObj = constructAddOrEditPopupObj(".popup_type_edit");
 const editProfileAvatarPopupObj = constructAddOrEditPopupObj('.popup_type_avatar-edit');
+const removeCardPopupObj = constructAddOrEditPopupObj('.popup_type_remove-card');
 const imagePopupObj = constructImagePopupObj(".popup_type_image");
 // объект с настройками для валидации
 const validationObj = {
@@ -87,15 +88,23 @@ Promise.all([getProfileInfoApi(), getCardListApi()])
 // Объект с функциями
 const funcObj = {
   removeFunc: function(evt, id) {
-    removeCardApi(id)
+    openModal(removeCardPopupObj.popup);
+    removeCardPopupObj.form.addEventListener('submit', function(event) {
+      event.preventDefault();
+      removeCardApi(id)
       .then(res => {
         if (res.ok) {
           return res.json();
         }
         return Promise.reject(`Ошибка ${res.status}`);
       })
-      .then(() => removeCard(evt))
-      .catch(err => console.log(err));
+      .then(() => {
+        removeCard(evt);
+      })
+      .catch(err => console.log(err))
+      .finally(() => closeModal(removeCardPopupObj.popup));
+    })
+
 
   },
   likeFunc: function(evt, id) {
