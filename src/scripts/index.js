@@ -71,8 +71,7 @@ const funcObj = {
             600
           );
         })
-        .catch((err) => console.log(`Не удалось удалить карточку. ${err}`))
-
+        .catch((err) => console.log(`Не удалось удалить карточку. ${err}`));
     };
     openModal(removeCardPopupObj.popup);
   },
@@ -131,12 +130,10 @@ function handleEditProfileFormSubmit(evt) {
     .then(() => {
       profileTitle.textContent = name;
       profileDescription.textContent = about;
-    })
-    .catch((err) => console.log(`Не удалось изменить профиль. ${err}`))
-    .finally(() => {
       closeModal(editProfilePopupObj.popup);
       setTimeout(() => renderLoading(false, editProfilePopupObj.button), 600);
-    });
+    })
+    .catch((err) => console.log(`Не удалось изменить профиль. ${err}`));
 }
 // добавляем новую карточку
 function handleAddCardFormSubmit(evt) {
@@ -151,12 +148,10 @@ function handleAddCardFormSubmit(evt) {
       res.link = link;
       res.myId = myId;
       placesList.prepend(addCard(res, funcObj));
-    })
-    .catch((err) => console.log(`Не удалось добавить карточку. ${err}`))
-    .finally(() => {
       closeModal(addNewCardPopupObj.popup);
       setTimeout(() => renderLoading(false, addNewCardPopupObj.button), 600);
-    });
+    })
+    .catch((err) => console.log(`Не удалось добавить карточку. ${err}`));
 }
 // фунция для удаления карточки, заменяется в funcObj
 let handleCardRemoveSubmit = function (evt) {
@@ -171,15 +166,13 @@ function handleEditAvatarFormSubmit(evt) {
   setProfileAvatar(url)
     .then((res) => {
       profileAvatar.style.backgroundImage = `url(${res.avatar})`;
-    })
-    .catch((err) => console.log(`Не удалось загрузить аватар. ${err}`))
-    .finally(() => {
       closeModal(editProfileAvatarPopupObj.popup);
       setTimeout(
         () => renderLoading(false, editProfileAvatarPopupObj.button),
         600
       );
-    });
+    })
+    .catch((err) => console.log(`Не удалось загрузить аватар. ${err}`));
 }
 
 // обработчик клика по картинке карточки
