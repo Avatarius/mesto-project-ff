@@ -200,6 +200,7 @@ profileEditButton.addEventListener("click", function () {
 });
 profileAvatar.addEventListener("click", function () {
   editProfileAvatarPopupObj.form.reset();
+  clearValidation(editProfileAvatarPopupObj.form, validationObj);
   openModal(editProfileAvatarPopupObj.popup);
 });
 
