@@ -6,119 +6,86 @@ const config = {
   },
 };
 
-function getProfileInfoApi() {
-  return fetch(`${config.baseUrl}/users/me`, {
-    headers: {
-      authorization: config.headers.authorization,
-      "Content-Type": config.headers["Content-Type"],
-    },
-  }).then((res) => {
+function getResponseData(res) {
+  return res.then((res) => {
     if (res.ok) {
       return res.json();
     }
     return Promise.reject(`Ошибка ${res.status}`);
   });
+}
+
+function getProfileInfoApi() {
+  return getResponseData(
+    fetch(`${config.baseUrl}/users/me`, {
+      headers: config.headers,
+    })
+  );
 }
 
 function getCardListApi() {
-  return fetch(`${config.baseUrl}/cards`, {
-    headers: {
-      authorization: config.headers.authorization,
-      "Content-Type": config.headers["Content-Type"],
-    },
-  }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Ошибка ${res.status}`);
-  });
+  return getResponseData(
+    fetch(`${config.baseUrl}/cards`, {
+      headers: config.headers,
+    })
+  );
 }
 
 function setProfileInfoApi(name, about) {
-  return fetch(`${config.baseUrl}/users/me`, {
-    method: "PATCH",
-    headers: {
-      authorization: config.headers.authorization,
-      "Content-Type": config.headers["Content-Type"],
-    },
-    body: JSON.stringify({
-      name,
-      about,
-    }),
-  }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Ошибка ${res.status}`);
-  });
+  return getResponseData(
+    fetch(`${config.baseUrl}/users/me`, {
+      method: "PATCH",
+      headers: config.headers,
+      body: JSON.stringify({
+        name,
+        about,
+      }),
+    })
+  );
 }
 
 function addCardApi(name, link) {
-  return fetch(`${config.baseUrl}/cards`, {
-    method: "POST",
-    headers: {
-      authorization: config.headers.authorization,
-      "Content-Type": config.headers["Content-Type"],
-    },
-    body: JSON.stringify({
-      name,
-      link,
-    }),
-  }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Ошибка ${res.status}`);
-  });
+  return getResponseData(
+    fetch(`${config.baseUrl}/cards`, {
+      method: "POST",
+      headers: config.headers,
+      body: JSON.stringify({
+        name,
+        link,
+      }),
+    })
+  );
 }
 
 function removeCardApi(cardId) {
-  return fetch(`${config.baseUrl}/cards/${cardId}`, {
-    method: "DELETE",
-    headers: {
-      authorization: config.headers.authorization,
-      "Content-Type": config.headers["Content-Type"],
-    },
-  }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Ошибка ${res.status}`);
-  });
+  return getResponseData(
+    fetch(`${config.baseUrl}/cards/${cardId}`, {
+      method: "DELETE",
+      headers: config.headers,
+    })
+  );
 }
 
 function likeCardApi(cardId, isAlreadyLiked) {
   const requestMethod = isAlreadyLiked ? "DELETE" : "PUT";
-  return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
-    method: requestMethod,
-    headers: {
-      authorization: config.headers.authorization,
-      "Content-Type": config.headers["Content-Type"],
-    },
-  }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Ошибка ${res.status}`);
-  });
+  return getResponseData(
+    fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
+      method: requestMethod,
+      headers: config.headers,
+    })
+  );
 }
 
 function setProfileAvatar(url) {
-  return fetch(`${config.baseUrl}/users/me/avatar`, {
-    method: "PATCH",
-    headers: {
-      authorization: config.headers.authorization,
-      "Content-Type": config.headers["Content-Type"],
-    },
-    body: JSON.stringify({
-      avatar: url,
-    }),
-  }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Ошибка ${res.status}`);
-  });
+  return getResponseData(
+    fetch(`${config.baseUrl}/users/me/avatar`, {
+      method: "PATCH",
+      headers: config.headers,
+      body: JSON.stringify({
+        avatar: url,
+      }),
+    })
+  );
 }
 
 export {
