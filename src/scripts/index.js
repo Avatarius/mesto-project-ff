@@ -23,25 +23,33 @@ const profileAvatar = document.querySelector(".profile__image");
 const addCardButton = document.querySelector(".profile__add-button");
 const profileEditButton = document.querySelector(".profile__edit-button");
 
-// функция для генерации объектов со всеми нужными элементами попапа
-function constructPopupObj(popupClass) {
-  const popup = document.querySelector(popupClass);
-  return {
-    popup,
-    form: popup.querySelector(".popup__form"),
-    inputList: popup.querySelectorAll(".popup__input"),
-    button: popup.querySelector(".popup__button"),
-    img: popup.querySelector(".popup__image"),
-    caption: popup.querySelector(".popup__caption"),
-  };
+// классы для генерации объектов со всеми нужными элементами попапа
+class Popup {
+  constructor(popupClass) {
+    this.popup = document.querySelector(popupClass);
+  }
+}
+class FormPopup extends Popup {
+  constructor(popupClass) {
+    super(popupClass);
+    this.form = this.popup.querySelector('.popup__form');
+    this.button = this.popup.querySelector('.popup__button');
+  }
+}
+class ImgPopup extends Popup {
+  constructor(popupClass) {
+    super(popupClass);
+    this.img = this.popup.querySelector(".popup__image");
+    this.caption = this.popup.querySelector(".popup__caption");
+  }
 }
 
 // попап объекты
-const addNewCardPopupObj = constructPopupObj(".popup_type_new-card");
-const editProfilePopupObj = constructPopupObj(".popup_type_edit");
-const editProfileAvatarPopupObj = constructPopupObj(".popup_type_avatar-edit");
-const removeCardPopupObj = constructPopupObj(".popup_type_remove-card");
-const imagePopupObj = constructPopupObj(".popup_type_image");
+const addNewCardPopupObj = new FormPopup('.popup_type_new-card');
+const editProfilePopupObj = new FormPopup(".popup_type_edit");
+const editProfileAvatarPopupObj = new FormPopup(".popup_type_avatar-edit");
+const removeCardPopupObj = new FormPopup(".popup_type_remove-card");
+const imagePopupObj = new ImgPopup(".popup_type_image");
 // объект с настройками для валидации
 const validationObj = {
   formSelector: ".popup__form",
@@ -130,8 +138,8 @@ function handleEditProfileFormSubmit(evt) {
   evt.preventDefault();
   renderLoading(true, editProfilePopupObj.button);
 
-  const name = editProfilePopupObj.inputList[0].value;
-  const about = editProfilePopupObj.inputList[1].value;
+  const name = editProfilePopupObj.form.name.value;
+  const about = editProfilePopupObj.form.description.value;
   setProfileInfoApi(name, about)
     .then((res) => {
       profileTitle.textContent = res.name;
@@ -145,8 +153,8 @@ function handleEditProfileFormSubmit(evt) {
 function handleAddCardFormSubmit(evt) {
   evt.preventDefault();
   renderLoading(true, addNewCardPopupObj.button);
-  const name = addNewCardPopupObj.inputList[0].value;
-  const link = addNewCardPopupObj.inputList[1].value;
+  const name = addNewCardPopupObj.form.place-name.value;
+  const link = addNewCardPopupObj.form.place-link.value;
   addCardApi(name, link)
     .then((res) => {
       res.myId = myId;
@@ -164,7 +172,7 @@ let handleCardRemoveSubmit = function (evt) {
 function handleEditAvatarFormSubmit(evt) {
   evt.preventDefault();
   renderLoading(true, editProfileAvatarPopupObj.button);
-  const url = editProfileAvatarPopupObj.inputList[0].value;
+  const url = editProfileAvatarPopupObj.form.avatar-link.value;
 
   setProfileAvatar(url)
     .then((res) => {
@@ -194,8 +202,8 @@ addCardButton.addEventListener("click", function () {
 });
 profileEditButton.addEventListener("click", function () {
   clearValidation(editProfilePopupObj.form, validationObj);
-  editProfilePopupObj.inputList[0].value = profileTitle.textContent;
-  editProfilePopupObj.inputList[1].value = profileDescription.textContent;
+  editProfilePopupObj.form.name.value = profileTitle.textContent;
+  editProfilePopupObj.form.description.value = profileDescription.textContent;
   openModal(editProfilePopupObj.popup);
 });
 profileAvatar.addEventListener("click", function () {
