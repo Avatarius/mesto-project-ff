@@ -127,9 +127,9 @@ function handleEditProfileFormSubmit(evt) {
   const name = editProfilePopupObj.inputList[0].value;
   const about = editProfilePopupObj.inputList[1].value;
   setProfileInfoApi(name, about)
-    .then(() => {
-      profileTitle.textContent = name;
-      profileDescription.textContent = about;
+    .then((res) => {
+      profileTitle.textContent = res.name;
+      profileDescription.textContent = res.about;
       closeModal(editProfilePopupObj.popup);
       setTimeout(() => renderLoading(false, editProfilePopupObj.button), 600);
     })
@@ -137,15 +137,12 @@ function handleEditProfileFormSubmit(evt) {
 }
 // добавляем новую карточку
 function handleAddCardFormSubmit(evt) {
-  // отрефакторить
   evt.preventDefault();
   renderLoading(true, addNewCardPopupObj.button);
   const name = addNewCardPopupObj.inputList[0].value;
   const link = addNewCardPopupObj.inputList[1].value;
   addCardApi(name, link)
     .then((res) => {
-      res.name = name;
-      res.link = link;
       res.myId = myId;
       placesList.prepend(addCard(res, funcObj));
       closeModal(addNewCardPopupObj.popup);
