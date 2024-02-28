@@ -10,6 +10,7 @@ import {
   removeCardApi,
   likeCardApi,
   setProfileAvatar,
+  getLikesApi,
 } from "./api";
 
 // список с карточками
@@ -76,9 +77,14 @@ const funcObj = {
     openModal(removeCardPopupObj.popup);
   },
   likeFunc: function (evt, id) {
-    const isAlreadyLiked = evt.target.classList.contains(
-      "card__like-button_is-active"
-    );
+    let isAlreadyLiked = false;
+    // получаем состояние лайка. Лайкали ли мы эту карточку или нет.
+    getLikesApi(id)
+      .then(res => {
+        isAlreadyLiked = res.likes.some((like) => like._id === myId);
+      })
+      .catch(err => console.log(`Не удалось получить состояние лайка. ${err}`))
+    // ставим или удаляем лайк
     likeCardApi(id, isAlreadyLiked)
       .then((res) => {
         likeCard(evt);
