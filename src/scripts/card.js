@@ -4,7 +4,7 @@ const cardTemplate = document.querySelector("#card-template").content;
 function addCard(cardObj, funcObj) {
 
   const cardElement = cardTemplate.querySelector(".card").cloneNode(true);
-  const { owner: {_id: ownerId}, _id: id, myId, name, link, likes } = cardObj;
+  const { owner: {_id: ownerId}, _id: cardId, myId, name, link, likes } = cardObj;
   const { removeFunc, likeFunc, imgClickFunc } = funcObj;
   const title = cardElement.querySelector(".card__title");
   const img = cardElement.querySelector(".card__image");
@@ -23,8 +23,8 @@ function addCard(cardObj, funcObj) {
   img.alt = name;
   img.src = link;
 
-  removeBtn.addEventListener("click", (evt) => removeFunc(evt, id));
-  likeBtn.addEventListener("click", (evt) => likeFunc(evt, id));
+  removeBtn.addEventListener("click", (evt) => removeFunc(evt, cardId));
+  likeBtn.addEventListener("click", (evt) => likeFunc(evt, cardId));
   img.addEventListener("click", imgClickFunc);
 
   return cardElement;

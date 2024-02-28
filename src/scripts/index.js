@@ -69,19 +69,6 @@ const profileEditButton = document.querySelector(".profile__edit-button");
 let myId;
 Promise.all([getProfileInfoApi(), getCardListApi()])
   .then((resList) => {
-    const jsonList = [];
-    let errorRes;
-    for (const res of resList) {
-      if (res.ok) {
-        jsonList.push(res.json());
-      } else {
-        errorRes = res;
-        return Promise.reject(`Ошибка ${errorRes.status}`);
-      }
-    }
-    return Promise.all(jsonList);
-  })
-  .then((resList) => {
     const [profileInfo, cardList] = resList;
     profileTitle.textContent = profileInfo.name;
     profileDescription.textContent = profileInfo.about;
@@ -103,12 +90,6 @@ const funcObj = {
     handleCardRemoveSubmit = function (event) {
       event.preventDefault();
       removeCardApi(id)
-        .then((res) => {
-          if (res.ok) {
-            return res.json();
-          }
-          return Promise.reject(`Ошибка ${res.status}`);
-        })
         .then(() => {
           removeCard(evt);
         })
@@ -123,16 +104,10 @@ const funcObj = {
     );
     likeCardApi(id, isAlreadyLiked)
       .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Ошибка ${res.status}`);
-      })
-      .then((res) => {
         likeCard(evt);
         updateLikeCounter(evt.target.nextElementSibling, res.likes.length);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(`Не удалось поставить лайк. ${err}`));
   },
   imgClickFunc: handleCardImgClick,
 };
@@ -170,18 +145,15 @@ function renderLoading(isLoading, btn) {
 function handleEditProfileFormSubmit(evt) {
   evt.preventDefault();
   renderLoading(true, editProfilePopupObj.button);
-  setProfile(editProfilePopupObj);
+
   setProfileInfoApi({
     name: editProfilePopupObj.inputList[0].value,
     about: editProfilePopupObj.inputList[1].value,
   })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Ошибка ${res.status}`);
+    .then(() => {
+      setProfile(editProfilePopupObj);
     })
-    .catch((err) => console.log(err))
+    .catch((err) => console.log(`Не удалось изменить профиль. ${err}`))
     .finally(() => {
       closeModal(editProfilePopupObj.popup);
       setTimeout(() => renderLoading(false, editProfilePopupObj.button), 600);
@@ -198,18 +170,12 @@ function handleAddCardFormSubmit(evt) {
   };
   addCardApi(newCardObj)
     .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Ошибка ${res.status}`);
-    })
-    .then((res) => {
       res.name = newCardObj.name;
       res.link = newCardObj.link;
       res.myId = myId;
       placesList.prepend(addCard(res, funcObj));
     })
-    .catch((err) => console.log(err))
+    .catch((err) => console.log(`Не удалось добавить карточку. ${err}`))
     .finally(() => {
       closeModal(addNewCardPopupObj.popup);
       setTimeout(() => renderLoading(false, addNewCardPopupObj.button), 600);
@@ -223,15 +189,9 @@ function handleEditAvatarFormSubmit(evt) {
 
   setProfileAvatar(url)
     .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Ошибка ${res.status}`);
-    })
-    .then((res) => {
       profileAvatar.style.backgroundImage = `url(${res.avatar})`;
     })
-    .catch((err) => console.log(err))
+    .catch((err) => console.log(`Не удалось загрузить аватар. ${err}`))
     .finally(() => {
       closeModal(editProfileAvatarPopupObj.popup);
       setTimeout(
@@ -250,9 +210,6 @@ function handleCardImgClick(evt) {
   setCardImage(imagePopupObj, evt.target);
   openModal(imagePopupObj.popup);
 }
-
-// показать дефолтные карточки
-// initialCards.forEach((item) => placesList.append(addCard(item, funcObj)));
 
 // открытие попапов
 addCardButton.addEventListener("click", function () {

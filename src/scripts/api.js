@@ -1,91 +1,132 @@
 const config = {
-  baseUrl: 'https://nomoreparties.co/v1/wff-cohort-8',
+  baseUrl: "https://nomoreparties.co/v1/wff-cohort-8",
   headers: {
-    authorization: '6aa9cfa4-9e37-45ec-86e7-4ccce0f3abad',
-    'Content-Type': 'application/json'
-  }
-}
-
+    authorization: "6aa9cfa4-9e37-45ec-86e7-4ccce0f3abad",
+    "Content-Type": "application/json",
+  },
+};
 
 function getProfileInfoApi() {
   return fetch(`${config.baseUrl}/users/me`, {
     headers: {
       authorization: config.headers.authorization,
-      'Content-Type': config.headers['Content-Type'],
+      "Content-Type": config.headers["Content-Type"],
+    },
+  }).then((res) => {
+    if (res.ok) {
+      return res.json();
     }
-  })
+    return Promise.reject(`Ошибка ${res.status}`);
+  });
 }
 
 function getCardListApi() {
   return fetch(`${config.baseUrl}/cards`, {
     headers: {
       authorization: config.headers.authorization,
-      'Content-Type': config.headers['Content-Type'],
+      "Content-Type": config.headers["Content-Type"],
+    },
+  }).then((res) => {
+    if (res.ok) {
+      return res.json();
     }
+    return Promise.reject(`Ошибка ${res.status}`);
   });
 }
 
 function setProfileInfoApi(profileObj) {
   return fetch(`${config.baseUrl}/users/me`, {
-    method: 'PATCH',
+    method: "PATCH",
     headers: {
       authorization: config.headers.authorization,
-      'Content-Type': config.headers['Content-Type'],
+      "Content-Type": config.headers["Content-Type"],
     },
     body: JSON.stringify({
       name: profileObj.name,
       about: profileObj.about,
-    })
+    }),
+  }).then((res) => {
+    if (res.ok) {
+      return res.json();
+    }
+    return Promise.reject(`Ошибка ${res.status}`);
   });
 }
 
 function addCardApi(cardObj) {
   return fetch(`${config.baseUrl}/cards`, {
-    method: 'POST',
+    method: "POST",
     headers: {
       authorization: config.headers.authorization,
-      'Content-Type': config.headers['Content-Type'],
+      "Content-Type": config.headers["Content-Type"],
     },
     body: JSON.stringify({
       name: cardObj.name,
       link: cardObj.link,
-    })
+    }),
+  }).then((res) => {
+    if (res.ok) {
+      return res.json();
+    }
+    return Promise.reject(`Ошибка ${res.status}`);
   });
 }
 
 function removeCardApi(cardId) {
   return fetch(`${config.baseUrl}/cards/${cardId}`, {
-    method: 'DELETE',
+    method: "DELETE",
     headers: {
       authorization: config.headers.authorization,
-      'Content-Type': config.headers['Content-Type'],
+      "Content-Type": config.headers["Content-Type"],
     },
+  }).then((res) => {
+    if (res.ok) {
+      return res.json();
+    }
+    return Promise.reject(`Ошибка ${res.status}`);
   });
 }
 
 function likeCardApi(cardId, isAlreadyLiked) {
-  const requestMethod = (isAlreadyLiked) ? 'DELETE' : 'PUT';
+  const requestMethod = isAlreadyLiked ? "DELETE" : "PUT";
   return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
     method: requestMethod,
     headers: {
       authorization: config.headers.authorization,
-      'Content-Type': config.headers['Content-Type'],
+      "Content-Type": config.headers["Content-Type"],
     },
+  }).then((res) => {
+    if (res.ok) {
+      return res.json();
+    }
+    return Promise.reject(`Ошибка ${res.status}`);
   });
 }
 
 function setProfileAvatar(url) {
   return fetch(`${config.baseUrl}/users/me/avatar`, {
-    method: 'PATCH',
+    method: "PATCH",
     headers: {
       authorization: config.headers.authorization,
-      'Content-Type': config.headers['Content-Type'],
+      "Content-Type": config.headers["Content-Type"],
     },
     body: JSON.stringify({
       avatar: url,
-    })
+    }),
+  }).then((res) => {
+    if (res.ok) {
+      return res.json();
+    }
+    return Promise.reject(`Ошибка ${res.status}`);
   });
 }
 
-
-export { getProfileInfoApi, setProfileInfoApi, getCardListApi, addCardApi, removeCardApi, likeCardApi, setProfileAvatar };
+export {
+  getProfileInfoApi,
+  setProfileInfoApi,
+  getCardListApi,
+  addCardApi,
+  removeCardApi,
+  likeCardApi,
+  setProfileAvatar,
+};
