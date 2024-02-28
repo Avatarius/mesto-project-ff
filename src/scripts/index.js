@@ -82,7 +82,7 @@ const funcObj = {
     likeCardApi(id, isAlreadyLiked)
       .then((res) => {
         likeCard(evt);
-        updateLikeCounter(evt.target.nextElementSibling, res.likes.length);
+        updateLikeCounter(evt.target, res.likes.length);
       })
       .catch((err) => console.log(`Не удалось поставить лайк. ${err}`));
   },

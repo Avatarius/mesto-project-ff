@@ -17,7 +17,6 @@ function addCard(cardObj, funcObj) {
   const img = cardElement.querySelector(".card__image");
   const removeBtn = cardElement.querySelector(".card__delete-button");
   const likeBtn = cardElement.querySelector(".card__like-button");
-  const likeCounter = cardElement.querySelector(".card__like-counter");
   // обновим состояние элементов карточки
   if (ownerId !== myId) {
     removeBtn.classList.add("card__delete-button_hidden");
@@ -25,7 +24,7 @@ function addCard(cardObj, funcObj) {
   if (likes.length > 0 && likes.some((item) => item._id === myId)) {
     likeBtn.classList.add("card__like-button_is-active");
   }
-  updateLikeCounter(likeCounter, cardObj.likes.length);
+  updateLikeCounter(likeBtn, likes.length);
   title.textContent = name;
   img.alt = name;
   img.src = link;
@@ -47,7 +46,8 @@ function likeCard(evt) {
   evt.target.classList.toggle("card__like-button_is-active");
 }
 
-function updateLikeCounter(counter, count) {
+function updateLikeCounter(button, count) {
+  const counter = button.closest('.card').querySelector('.card__like-counter');
   counter.textContent = count;
 }
 
