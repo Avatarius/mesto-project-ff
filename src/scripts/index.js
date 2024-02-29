@@ -32,8 +32,8 @@ class Popup {
 class FormPopup extends Popup {
   constructor(popupClass) {
     super(popupClass);
-    this.form = this.popup.querySelector('.popup__form');
-    this.button = this.popup.querySelector('.popup__button');
+    this.form = this.popup.querySelector(".popup__form");
+    this.button = this.popup.querySelector(".popup__button");
   }
 }
 class ImgPopup extends Popup {
@@ -45,7 +45,7 @@ class ImgPopup extends Popup {
 }
 
 // попап объекты
-const addNewCardPopupObj = new FormPopup('.popup_type_new-card');
+const addNewCardPopupObj = new FormPopup(".popup_type_new-card");
 const editProfilePopupObj = new FormPopup(".popup_type_edit");
 const editProfileAvatarPopupObj = new FormPopup(".popup_type_avatar-edit");
 const removeCardPopupObj = new FormPopup(".popup_type_remove-card");
@@ -85,20 +85,27 @@ const funcObj = {
     openModal(removeCardPopupObj.popup);
   },
   likeFunc: function (evt, id) {
-    let isAlreadyLiked = false;
-    // получаем состояние лайка. Лайкали ли мы эту карточку или нет.
-    getLikesApi(id)
-      .then(res => {
-        isAlreadyLiked = res.likes.some((like) => like._id === myId);
+    // находим карточку и выясняем лайкали ли мы её
+    getCardListApi()
+      .then((cardList) => {
+        let card;
+        cardList.forEach((item) => {
+          if (item._id === id) {
+            card = item;
+          }
+        });
+        return card.likes.some((item) => item._id === myId);
       })
-      .catch(err => console.log(`Не удалось получить состояние лайка. ${err}`))
+      // ставим или убираем лайк
+      .then((isAlreadyLiked) => {
+        likeCardApi(id, isAlreadyLiked)
+          .then((res) => {
+            likeCard(evt);
+            updateLikeCounter(evt.target, res.likes.length);
+          })
+          .catch((err) => console.log(`Не удалось поставить лайк. ${err}`));
+      });
     // ставим или удаляем лайк
-    likeCardApi(id, isAlreadyLiked)
-      .then((res) => {
-        likeCard(evt);
-        updateLikeCounter(evt.target, res.likes.length);
-      })
-      .catch((err) => console.log(`Не удалось поставить лайк. ${err}`));
   },
   imgClickFunc: handleCardImgClick,
 };
@@ -153,8 +160,8 @@ function handleEditProfileFormSubmit(evt) {
 function handleAddCardFormSubmit(evt) {
   evt.preventDefault();
   renderLoading(true, addNewCardPopupObj.button);
-  const name = addNewCardPopupObj.form.place-name.value;
-  const link = addNewCardPopupObj.form.place-link.value;
+  const name = addNewCardPopupObj.form.place - name.value;
+  const link = addNewCardPopupObj.form.place - link.value;
   addCardApi(name, link)
     .then((res) => {
       res.myId = myId;
@@ -172,7 +179,7 @@ let handleCardRemoveSubmit = function (evt) {
 function handleEditAvatarFormSubmit(evt) {
   evt.preventDefault();
   renderLoading(true, editProfileAvatarPopupObj.button);
-  const url = editProfileAvatarPopupObj.form.avatar-link.value;
+  const url = editProfileAvatarPopupObj.form.avatar - link.value;
 
   setProfileAvatar(url)
     .then((res) => {

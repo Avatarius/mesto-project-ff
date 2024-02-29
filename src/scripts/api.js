@@ -66,16 +66,8 @@ function removeCardApi(cardId) {
   );
 }
 
-function getLikesApi(cardId) {
-  return getResponseData(
-    fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
-      headers: config.headers,
-    })
-  );
-}
-
 function likeCardApi(cardId, isAlreadyLiked) {
-  const requestMethod = "PUT";
+  const requestMethod = (isAlreadyLiked) ? 'DELETE' : 'PUT';
   return getResponseData(
     fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
       method: requestMethod,
@@ -102,7 +94,6 @@ export {
   getCardListApi,
   addCardApi,
   removeCardApi,
-  getLikesApi,
   likeCardApi,
   setProfileAvatar,
 };
