@@ -14,7 +14,6 @@ function clearValidation(formElement, settingsObj) {
   );
   const button = formElement.querySelector(settingsObj.submitButtonSelector);
   inputList.forEach((inputElement) => {
-    console.log(inputElement.validity);
     const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
     hideInputError(
       errorElement,

@@ -160,8 +160,8 @@ function handleEditProfileFormSubmit(evt) {
 function handleAddCardFormSubmit(evt) {
   evt.preventDefault();
   renderLoading(true, addNewCardPopupObj.button);
-  const name = addNewCardPopupObj.form.place - name.value;
-  const link = addNewCardPopupObj.form.place - link.value;
+  const name = addNewCardPopupObj.form.name.value;
+  const link = addNewCardPopupObj.form.link.value;
   addCardApi(name, link)
     .then((res) => {
       res.myId = myId;
@@ -179,7 +179,8 @@ let handleCardRemoveSubmit = function (evt) {
 function handleEditAvatarFormSubmit(evt) {
   evt.preventDefault();
   renderLoading(true, editProfileAvatarPopupObj.button);
-  const url = editProfileAvatarPopupObj.form.avatar - link.value;
+  console.log(editProfileAvatarPopupObj.form);
+  const url = editProfileAvatarPopupObj.form.link.value;
 
   setProfileAvatar(url)
     .then((res) => {
