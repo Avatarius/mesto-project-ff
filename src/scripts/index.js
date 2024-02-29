@@ -100,7 +100,7 @@ const funcObj = {
       .then((isAlreadyLiked) => {
         likeCardApi(id, isAlreadyLiked)
           .then((res) => {
-            likeCard(button);
+            likeCard(button, isAlreadyLiked);
             updateLikeCounter(button, res.likes.length);
           })
           .catch((err) => console.log(`Не удалось поставить лайк. ${err}`));

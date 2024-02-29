@@ -43,8 +43,12 @@ function removeCard(button) {
 }
 
 // лайк
-function likeCard(button) {
-  button.classList.toggle("card__like-button_is-active");
+function likeCard(button, isAlreadyLiked) {
+  if (isAlreadyLiked) {
+    button.classList.remove("card__like-button_is-active");
+  } else {
+    button.classList.add("card__like-button_is-active");
+  }
 }
 
 // обновляем счетчик лайков
