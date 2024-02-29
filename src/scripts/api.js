@@ -67,7 +67,7 @@ function removeCardApi(cardId) {
 }
 
 function likeCardApi(cardId, isAlreadyLiked) {
-  const requestMethod = (isAlreadyLiked) ? 'DELETE' : 'PUT';
+  const requestMethod = isAlreadyLiked ? "DELETE" : "PUT";
   return getResponseData(
     fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
       method: requestMethod,

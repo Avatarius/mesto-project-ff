@@ -25,29 +25,31 @@ function addCard(cardObj, funcObj) {
     likeBtn.classList.add("card__like-button_is-active");
   }
   updateLikeCounter(likeBtn, likes.length);
+
   title.textContent = name;
   img.alt = name;
   img.src = link;
 
-  removeBtn.addEventListener("click", (evt) => removeFunc(evt, cardId));
-  likeBtn.addEventListener("click", (evt) => likeFunc(evt, cardId));
+  removeBtn.addEventListener("click", (evt) => removeFunc(removeBtn, cardId));
+  likeBtn.addEventListener("click", (evt) => likeFunc(likeBtn, cardId));
   img.addEventListener("click", imgClickFunc);
 
   return cardElement;
 }
 
 // Функция удаления карточки
-function removeCard(evt) {
-  evt.target.closest(".card").remove();
+function removeCard(button) {
+  button.closest(".card").remove();
 }
 
 // лайк
-function likeCard(evt) {
-  evt.target.classList.toggle("card__like-button_is-active");
+function likeCard(button) {
+  button.classList.toggle("card__like-button_is-active");
 }
 
+// обновляем счетчик лайков
 function updateLikeCounter(button, count) {
-  const counter = button.closest('.card').querySelector('.card__like-counter');
+  const counter = button.closest(".card").querySelector(".card__like-counter");
   counter.textContent = count;
 }
 

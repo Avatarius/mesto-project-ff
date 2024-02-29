@@ -62,12 +62,12 @@ const validationObj = {
 };
 // Объект с функциями
 const funcObj = {
-  removeFunc: function (evt, id) {
+  removeFunc: function (button, id) {
     handleCardRemoveSubmit = function (event) {
       event.preventDefault();
       removeCardApi(id)
         .then(() => {
-          removeCard(evt);
+          removeCard(button);
           closeModal(removeCardPopupObj.popup);
           setTimeout(
             () =>
@@ -84,7 +84,7 @@ const funcObj = {
     };
     openModal(removeCardPopupObj.popup);
   },
-  likeFunc: function (evt, id) {
+  likeFunc: function (button, id) {
     // находим карточку и выясняем лайкали ли мы её
     getCardListApi()
       .then((cardList) => {
@@ -100,12 +100,12 @@ const funcObj = {
       .then((isAlreadyLiked) => {
         likeCardApi(id, isAlreadyLiked)
           .then((res) => {
-            likeCard(evt);
-            updateLikeCounter(evt.target, res.likes.length);
+            likeCard(button);
+            updateLikeCounter(button, res.likes.length);
           })
           .catch((err) => console.log(`Не удалось поставить лайк. ${err}`));
-      });
-    // ставим или удаляем лайк
+      })
+      .catch((err) => console.log(`Не удалось поставить лайк. ${err}`));
   },
   imgClickFunc: handleCardImgClick,
 };
@@ -179,7 +179,6 @@ let handleCardRemoveSubmit = function (evt) {
 function handleEditAvatarFormSubmit(evt) {
   evt.preventDefault();
   renderLoading(true, editProfileAvatarPopupObj.button);
-  console.log(editProfileAvatarPopupObj.form);
   const url = editProfileAvatarPopupObj.form.link.value;
 
   setProfileAvatar(url)
