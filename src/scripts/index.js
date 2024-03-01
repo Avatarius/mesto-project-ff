@@ -10,7 +10,6 @@ import {
   removeCardApi,
   likeCardApi,
   setProfileAvatar,
-  getLikesApi,
 } from "./api";
 
 // список с карточками
@@ -23,33 +22,40 @@ const profileAvatar = document.querySelector(".profile__image");
 const addCardButton = document.querySelector(".profile__add-button");
 const profileEditButton = document.querySelector(".profile__edit-button");
 
-// классы для генерации объектов со всеми нужными элементами попапа
-class Popup {
-  constructor(popupClass) {
-    this.popup = document.querySelector(popupClass);
-  }
-}
-class FormPopup extends Popup {
-  constructor(popupClass) {
-    super(popupClass);
-    this.form = this.popup.querySelector(".popup__form");
-    this.button = this.popup.querySelector(".popup__button");
-  }
-}
-class ImgPopup extends Popup {
-  constructor(popupClass) {
-    super(popupClass);
-    this.img = this.popup.querySelector(".popup__image");
-    this.caption = this.popup.querySelector(".popup__caption");
-  }
-}
-
 // попап объекты
-const addNewCardPopupObj = new FormPopup(".popup_type_new-card");
-const editProfilePopupObj = new FormPopup(".popup_type_edit");
-const editProfileAvatarPopupObj = new FormPopup(".popup_type_avatar-edit");
-const removeCardPopupObj = new FormPopup(".popup_type_remove-card");
-const imagePopupObj = new ImgPopup(".popup_type_image");
+const addNewCardPopup = document.querySelector(".popup_type_new-card");
+const addNewCardPopupObj = {
+  popup: addNewCardPopup,
+  form: addNewCardPopup.querySelector(".popup__form"),
+  button: addNewCardPopup.querySelector(".popup__button"),
+};
+const editProfilePopup = document.querySelector(".popup_type_edit");
+const editProfilePopupObj = {
+  popup: editProfilePopup,
+  form: editProfilePopup.querySelector(".popup__form"),
+  button: editProfilePopup.querySelector(".popup__button"),
+};
+const editProfileAvatarPopup = document.querySelector(
+  ".popup_type_avatar-edit"
+);
+const editProfileAvatarPopupObj = {
+  popup: editProfileAvatarPopup,
+  form: editProfileAvatarPopup.querySelector(".popup__form"),
+  button: editProfileAvatarPopup.querySelector(".popup__button"),
+};
+const removeCardPopup = document.querySelector(".popup_type_remove-card");
+const removeCardPopupObj = {
+  popup: removeCardPopup,
+  form: removeCardPopup.querySelector(".popup__form"),
+  button: removeCardPopup.querySelector(".popup__button"),
+};
+const imagePopup = document.querySelector(".popup_type_image");
+const imagePopupObj = {
+  popup: imagePopup,
+  img: imagePopup.querySelector(".popup__image"),
+  caption: imagePopup.querySelector(".popup__caption"),
+};
+
 // объект с настройками для валидации
 const validationObj = {
   formSelector: ".popup__form",
@@ -69,6 +75,9 @@ const funcObj = {
         .then(() => {
           removeCard(button);
           closeModal(removeCardPopupObj.popup);
+        })
+        .catch((err) => console.log(`Не удалось удалить карточку. ${err}`))
+        .finally(() =>
           setTimeout(
             () =>
               renderLoading(
@@ -78,32 +87,16 @@ const funcObj = {
                 "Идёт удаление"
               ),
             600
-          );
-        })
-        .catch((err) => console.log(`Не удалось удалить карточку. ${err}`));
+          )
+        );
     };
     openModal(removeCardPopupObj.popup);
   },
-  likeFunc: function (button, id) {
-    // находим карточку и выясняем лайкали ли мы её
-    getCardListApi()
-      .then((cardList) => {
-        let card;
-        cardList.forEach((item) => {
-          if (item._id === id) {
-            card = item;
-          }
-        });
-        return card.likes.some((item) => item._id === myId);
-      })
-      // ставим или убираем лайк
-      .then((isAlreadyLiked) => {
-        likeCardApi(id, isAlreadyLiked)
-          .then((res) => {
-            likeCard(button, isAlreadyLiked);
-            updateLikeCounter(button, res.likes.length);
-          })
-          .catch((err) => console.log(`Не удалось поставить лайк. ${err}`));
+  likeFunc: function (button, id, isAlreadyLiked) {
+    likeCardApi(id, isAlreadyLiked)
+      .then((res) => {
+        likeCard(button, isAlreadyLiked);
+        updateLikeCounter(button, res.likes.length);
       })
       .catch((err) => console.log(`Не удалось поставить лайк. ${err}`));
   },
@@ -152,9 +145,11 @@ function handleEditProfileFormSubmit(evt) {
       profileTitle.textContent = res.name;
       profileDescription.textContent = res.about;
       closeModal(editProfilePopupObj.popup);
-      setTimeout(() => renderLoading(false, editProfilePopupObj.button), 600);
     })
-    .catch((err) => console.log(`Не удалось изменить профиль. ${err}`));
+    .catch((err) => console.log(`Не удалось изменить профиль. ${err}`))
+    .finally(() =>
+      setTimeout(() => renderLoading(false, editProfilePopupObj.button), 600)
+    );
 }
 // добавляем новую карточку
 function handleAddCardFormSubmit(evt) {
@@ -167,9 +162,11 @@ function handleAddCardFormSubmit(evt) {
       res.myId = myId;
       placesList.prepend(addCard(res, funcObj));
       closeModal(addNewCardPopupObj.popup);
-      setTimeout(() => renderLoading(false, addNewCardPopupObj.button), 600);
     })
-    .catch((err) => console.log(`Не удалось добавить карточку. ${err}`));
+    .catch((err) => console.log(`Не удалось добавить карточку. ${err}`))
+    .finally(() =>
+      setTimeout(() => renderLoading(false, addNewCardPopupObj.button), 600)
+    );
 }
 // фунция для удаления карточки, заменяется в funcObj
 let handleCardRemoveSubmit = function (evt) {
@@ -185,12 +182,14 @@ function handleEditAvatarFormSubmit(evt) {
     .then((res) => {
       profileAvatar.style.backgroundImage = `url(${res.avatar})`;
       closeModal(editProfileAvatarPopupObj.popup);
+    })
+    .catch((err) => console.log(`Не удалось загрузить аватар. ${err}`))
+    .finally(() =>
       setTimeout(
         () => renderLoading(false, editProfileAvatarPopupObj.button),
         600
-      );
-    })
-    .catch((err) => console.log(`Не удалось загрузить аватар. ${err}`));
+      )
+    );
 }
 
 // обработчик клика по картинке карточки

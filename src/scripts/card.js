@@ -17,6 +17,7 @@ function addCard(cardObj, funcObj) {
   const img = cardElement.querySelector(".card__image");
   const removeBtn = cardElement.querySelector(".card__delete-button");
   const likeBtn = cardElement.querySelector(".card__like-button");
+
   // обновим состояние элементов карточки
   if (ownerId !== myId) {
     removeBtn.classList.add("card__delete-button_hidden");
@@ -31,7 +32,13 @@ function addCard(cardObj, funcObj) {
   img.src = link;
 
   removeBtn.addEventListener("click", (evt) => removeFunc(removeBtn, cardId));
-  likeBtn.addEventListener("click", (evt) => likeFunc(likeBtn, cardId));
+  likeBtn.addEventListener("click", (evt) =>
+    likeFunc(
+      likeBtn,
+      cardId,
+      likeBtn.classList.contains("card__like-button_is-active")
+    )
+  );
   img.addEventListener("click", imgClickFunc);
 
   return cardElement;

@@ -7,85 +7,69 @@ const config = {
 };
 
 function getResponseData(res) {
-  return res.then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Ошибка ${res.status}`);
-  });
+  if (!res.ok) {
+    return Promise.reject(`Ошибка: ${res.status}`);
+  }
+  return res.json();
 }
 
 function getProfileInfoApi() {
-  return getResponseData(
-    fetch(`${config.baseUrl}/users/me`, {
-      headers: config.headers,
-    })
-  );
+  return fetch(`${config.baseUrl}/users/me`, {
+    headers: config.headers,
+  }).then(getResponseData);
 }
 
 function getCardListApi() {
-  return getResponseData(
-    fetch(`${config.baseUrl}/cards`, {
-      headers: config.headers,
-    })
-  );
+  return fetch(`${config.baseUrl}/cards`, {
+    headers: config.headers,
+  }).then(getResponseData);
 }
 
 function setProfileInfoApi(name, about) {
-  return getResponseData(
-    fetch(`${config.baseUrl}/users/me`, {
-      method: "PATCH",
-      headers: config.headers,
-      body: JSON.stringify({
-        name,
-        about,
-      }),
-    })
-  );
+  return fetch(`${config.baseUrl}/users/me`, {
+    method: "PATCH",
+    headers: config.headers,
+    body: JSON.stringify({
+      name,
+      about,
+    }),
+  }).then(getResponseData);
 }
 
 function addCardApi(name, link) {
-  return getResponseData(
-    fetch(`${config.baseUrl}/cards`, {
-      method: "POST",
-      headers: config.headers,
-      body: JSON.stringify({
-        name,
-        link,
-      }),
-    })
-  );
+  return fetch(`${config.baseUrl}/cards`, {
+    method: "POST",
+    headers: config.headers,
+    body: JSON.stringify({
+      name,
+      link,
+    }),
+  }).then(getResponseData);
 }
 
 function removeCardApi(cardId) {
-  return getResponseData(
-    fetch(`${config.baseUrl}/cards/${cardId}`, {
-      method: "DELETE",
-      headers: config.headers,
-    })
-  );
+  return fetch(`${config.baseUrl}/cards/${cardId}`, {
+    method: "DELETE",
+    headers: config.headers,
+  }).then(getResponseData);
 }
 
 function likeCardApi(cardId, isAlreadyLiked) {
   const requestMethod = isAlreadyLiked ? "DELETE" : "PUT";
-  return getResponseData(
-    fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
-      method: requestMethod,
-      headers: config.headers,
-    })
-  );
+  return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
+    method: requestMethod,
+    headers: config.headers,
+  }).then(getResponseData);
 }
 
 function setProfileAvatar(url) {
-  return getResponseData(
-    fetch(`${config.baseUrl}/users/me/avatar`, {
-      method: "PATCH",
-      headers: config.headers,
-      body: JSON.stringify({
-        avatar: url,
-      }),
-    })
-  );
+  return fetch(`${config.baseUrl}/users/me/avatar`, {
+    method: "PATCH",
+    headers: config.headers,
+    body: JSON.stringify({
+      avatar: url,
+    }),
+  }).then(getResponseData);
 }
 
 export {
